@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';
+import "package:dynamic_color/dynamic_color.dart";
+import "package:flutter/material.dart";
+import "package:k19_player/widgets/small_player.dart";
+
+import "widgets/player.dart";
 
 void main() {
   runApp(const MainApp());
@@ -9,12 +13,43 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+    return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
+      return MaterialApp(
+        theme: ThemeData(
+          colorScheme: lightColorScheme,
         ),
-      ),
-    );
+        
+        darkTheme: ThemeData(
+          colorScheme: darkColorScheme,
+          useMaterial3: true,
+        ),
+
+        home: Scaffold(
+          bottomNavigationBar: NavigationBar(
+            onDestinationSelected: (int index) {
+            },
+            destinations: const <Widget>[
+              NavigationDestination(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.music_note),
+                label: 'Playlists',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.album),
+                label: 'Albums',
+              ),
+            ],
+          ),
+
+          body: Scaffold(
+            bottomNavigationBar: BottomAppBar(child: SmallPlayer(),),
+            body: Player(),
+          ),
+        ),
+      );
+    });
   }
 }

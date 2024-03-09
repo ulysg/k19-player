@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  dynamic_color:
+    dependency: "direct main"
+    description:
+      name: dynamic_color
+      sha256: eae98052fa6e2826bdac3dd2e921c6ce2903be15c6b7f8b6d8a5d49b5086298d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.7.0"
   fake_async:
     dependency: transitive
     description:
@@ -218,4 +226,4 @@ packages:
     version: "13.0.0"
 sdks:
   dart: ">=3.3.0 <4.0.0"
-  flutter: ">=1.16.0"
+  flutter: ">=3.4.0-17.0.pre"
