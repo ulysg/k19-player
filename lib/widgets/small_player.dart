@@ -16,21 +16,50 @@ class SmallPlayer extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(6),
           
-          child: Image.network(
-            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
-            height: 48,
+          child: Consumer<PlayerModel>(
+            builder: (context, playerModel, child) {
+              String? image = playerModel.mediaItem?.artUri.toString();
+
+              if (image != null) {
+                return Image.network(
+                  image,
+                  height: 48,
+                );
+              }
+
+              return Container(
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+                child: Icon(
+                  Icons.album,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.surface,
+                )
+              );
+            }
           ),
         ),
 
-        const Column (
+        Column (
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-            Text(
-              "WOW SUPER MUSIC",
-              style: TextStyle(fontWeight: FontWeight.bold),),
+            Consumer<PlayerModel>(
+              builder: (context, playerModel, child) {
+                return Text(
+                  playerModel.mediaItem?.title ?? "",
+                  style: const TextStyle(fontSize: 16),
+                );
+              }
+            ),
               
-            Text("Super autheur"),
+            Consumer<PlayerModel>(
+              builder: (context, playerModel, child) {
+                return Text(
+                  playerModel.mediaItem?.artist ?? "",
+                );
+              },
+            )
           ]
         ),
 

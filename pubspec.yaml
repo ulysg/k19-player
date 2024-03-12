@@ -10,6 +10,7 @@ dependencies:
   dynamic_color: ^1.7.0
   flutter:
     sdk: flutter
+  http: ^1.2.1
   just_audio: ^0.9.36
   just_audio_background: ^0.0.1-beta.11
   provider: ^6.1.2

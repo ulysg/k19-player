@@ -20,9 +20,27 @@ class Player extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(24),
-            
-            child: Image.network(
-              "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg",
+
+            child: Consumer<PlayerModel>(
+              builder: (context, playerModel, child) {
+                String? image = playerModel.mediaItem?.artUri.toString();
+
+                if (image != null) {
+                  return Image.network(
+                    image,
+                    height: 288,
+                  );
+                }
+
+                return Container(
+                  decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+                  child: Icon(
+                    Icons.album,
+                    size: 288,
+                    color: Theme.of(context).colorScheme.surface,
+                  )
+                );
+              }
             ),
           ),
 
@@ -38,7 +56,28 @@ class Player extends StatelessWidget {
             }
           ),
           
-          const Text("Wow what a cool music"),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            
+            children: [
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  return Text(
+                    playerModel.mediaItem?.title ?? "",
+                    style: const TextStyle(fontSize: 18),
+                  );
+                }
+              ),
+                
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  return Text(
+                    playerModel.mediaItem?.artist ?? "",
+                  );
+                },
+              ),
+            ],
+          ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -47,10 +86,10 @@ class Player extends StatelessWidget {
               FilledButton.tonal(
                 onPressed: () {
                   final audioSource = AudioSource.uri(
-                    Uri.parse("https://samplelib.com/lib/preview/mp3/sample-15s.mp3"),
+                    Uri.parse("https://music.ulys.ch/rest/stream?u=ulys&t=097830c0baef49605a1e25b80b122142&s=37237f05325738d00be2597a49ee1de3&v=1.16.1&c=ch.ulys.Periscope&f=json&id=bf12b2adfe6a7c66f805fd86bf1967e3"),
                     tag: MediaItem(
                       id: "1",
-                      album: "Lol",
+                      artist: "Lol",
                       title: "Super musique omg",
                       artUri: Uri.parse("https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
                     ),
