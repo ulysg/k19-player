@@ -1,12 +1,23 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
-import "package:k19_player/api/player.dart";
+import "package:just_audio_background/just_audio_background.dart";
+import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/small_player.dart";
+import "package:provider/provider.dart";
 
 import "widgets/player.dart";
 
-void main() {
-  runApp(const MainApp());
+Future<void> main() async {
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: false,
+  );
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => PlayerModel(),
+    child: const MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -15,9 +26,6 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
-      PlayerProvider.player.setUrl("https://samplelib.com/lib/preview/mp3/sample-12s.mp3");
-      PlayerProvider.player.play();
-
       return MaterialApp(
         theme: ThemeData(
           colorScheme: lightColorScheme,

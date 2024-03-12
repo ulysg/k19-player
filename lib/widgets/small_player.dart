@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:k19_player/models/player_model.dart";
+import "package:provider/provider.dart";
 
 class SmallPlayer extends StatelessWidget {
   const SmallPlayer({
@@ -32,9 +34,15 @@ class SmallPlayer extends StatelessWidget {
           ]
         ),
 
-        FilledButton(
-          onPressed: () {print("hello");},
-          child: const Icon(Icons.play_arrow),
+        Consumer<PlayerModel>(
+          builder: (context, playerModel, child) {
+            IconData icon = playerModel.playing ? Icons.pause : Icons.play_arrow; 
+
+            return FilledButton(
+              onPressed: () {PlayerModel.player.playing ?  PlayerModel.player.pause() : PlayerModel.player.play();},
+              child: Icon(icon)
+            );
+          }
         ),
       ]
     );

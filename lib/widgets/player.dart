@@ -1,4 +1,8 @@
 import "package:flutter/material.dart";
+import "package:just_audio/just_audio.dart";
+import "package:just_audio_background/just_audio_background.dart";
+import "package:k19_player/models/player_model.dart";
+import "package:provider/provider.dart";
 
 class Player extends StatelessWidget {
   const Player({
@@ -22,9 +26,16 @@ class Player extends StatelessWidget {
             ),
           ),
 
-          Slider(
-            value: 0,
-            onChanged: (i) {},
+          Consumer<PlayerModel>(
+            builder: (context, playerModel, child) {
+              return Slider(
+                value: playerModel.position.toDouble(),
+                max: playerModel.duration.toDouble(),
+                onChanged: (i) {
+                  playerModel.seek(i.toInt());
+                },
+              );
+            }
           ),
           
           const Text("Wow what a cool music"),
@@ -34,13 +45,31 @@ class Player extends StatelessWidget {
 
             children: [
               FilledButton.tonal(
-                onPressed: () {print("hello");},
+                onPressed: () {
+                  final audioSource = AudioSource.uri(
+                    Uri.parse("https://samplelib.com/lib/preview/mp3/sample-15s.mp3"),
+                    tag: MediaItem(
+                      id: "1",
+                      album: "Lol",
+                      title: "Super musique omg",
+                      artUri: Uri.parse("https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+                    ),
+                  );
+
+                  PlayerModel.player.setAudioSource(audioSource);
+                },
                 child: const Icon(Icons.skip_previous),
               ),
 
-              FilledButton(
-                onPressed: () {print("hello");},
-                child: const Icon(Icons.play_arrow),
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  IconData icon = playerModel.playing ? Icons.pause : Icons.play_arrow; 
+
+                  return FilledButton(
+                    onPressed: () {PlayerModel.player.playing ?  PlayerModel.player.pause() : PlayerModel.player.play();},
+                    child: Icon(icon)
+                  );
+                }
               ),
 
               FilledButton.tonal(
