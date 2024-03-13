@@ -36,39 +36,61 @@ class MainApp extends StatelessWidget {
           useMaterial3: true,
         ),
 
-        home: Scaffold(
-          bottomNavigationBar: NavigationBar(
-            onDestinationSelected: (int index) {
-            },
-
-            destinations: const <Widget>[
-              NavigationDestination(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-
-              NavigationDestination(
-                icon: Icon(Icons.music_note),
-                label: 'Playlists',
-              ),
-              
-              NavigationDestination(
-                icon: Icon(Icons.album),
-                label: 'Albums',
-              ),
-            ],
-          ),
-
-          body: const Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-            children: [
-              Player(),
-              SmallPlayer()
-            ],
-          )
+        home: const Scaffold(
+          bottomNavigationBar: NavBar(),
+          body: MainView()
         ),
       );
     });
+  }
+}
+
+class MainView extends StatelessWidget {
+  const MainView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: const Player(),
+
+      bottomNavigationBar: InkWell(
+        onTap: () {
+          Scaffold.of(context).showBottomSheet((builder) {
+            return const Player();
+          });
+        },
+
+        child: const SmallPlayer(),
+      ),
+    );
+  }
+}
+
+class NavBar extends StatelessWidget {
+  const NavBar({super.key});
+
+    @override
+  Widget build(BuildContext context) {
+    return NavigationBar(
+      onDestinationSelected: (int index) {
+      },
+
+      destinations: const <Widget>[
+        NavigationDestination(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+
+        NavigationDestination(
+          icon: Icon(Icons.music_note),
+          label: 'Playlists',
+        ),
+        
+        NavigationDestination(
+          icon: Icon(Icons.album),
+          label: 'Albums',
+        ),
+      ],
+    );
   }
 }

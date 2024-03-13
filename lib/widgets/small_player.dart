@@ -10,14 +10,7 @@ class SmallPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-         Scaffold.of(context).showBottomSheet((builder) {
-          return const Player();
-         });
-      },
-                      
-      child: BottomAppBar(
+      return BottomAppBar(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
 
@@ -90,7 +83,6 @@ class SmallPlayer extends StatelessWidget {
             ]
           ),
         )
-      ),
-    );
+      );
   }
 }
