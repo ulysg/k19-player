@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:k19_player/models/player_model.dart";
-import "package:k19_player/widgets/player.dart";
+import "package:k19_player/widgets/playing_image.dart";
 import "package:provider/provider.dart";
 
 class SmallPlayer extends StatelessWidget {
@@ -18,32 +18,8 @@ class SmallPlayer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                
-                child: Consumer<PlayerModel>(
-                  builder: (context, playerModel, child) {
-                    String? image = playerModel.mediaItem?.artUri.toString();
-
-                    if (image != null) {
-                      return Image.network(
-                        image,
-                        height: 48,
-                      );
-                    }
-
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary
-                      ),
-                      child: Icon(
-                        Icons.album,
-                        size: 48,
-                        color: Theme.of(context).colorScheme.surface,
-                      )
-                    );
-                  }
-                ),
+              const PlayingImage(
+                height: 48,
               ),
 
               Column (

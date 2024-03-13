@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/models/player_model.dart";
+import "package:k19_player/widgets/playing_image.dart";
 import "package:provider/provider.dart";
 
 class Player extends StatelessWidget {
@@ -18,30 +19,8 @@ class Player extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-
-            child: Consumer<PlayerModel>(
-              builder: (context, playerModel, child) {
-                String? image = playerModel.mediaItem?.artUri.toString();
-
-                if (image != null) {
-                  return Image.network(
-                    image,
-                    height: 288,
-                  );
-                }
-
-                return Container(
-                  decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
-                  child: Icon(
-                    Icons.album,
-                    size: 288,
-                    color: Theme.of(context).colorScheme.surface,
-                  )
-                );
-              }
-            ),
+          const PlayingImage(
+            height: 288,
           ),
 
           Consumer<PlayerModel>(
