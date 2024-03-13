@@ -40,15 +40,18 @@ class MainApp extends StatelessWidget {
           bottomNavigationBar: NavigationBar(
             onDestinationSelected: (int index) {
             },
+
             destinations: const <Widget>[
               NavigationDestination(
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
+
               NavigationDestination(
                 icon: Icon(Icons.music_note),
                 label: 'Playlists',
               ),
+              
               NavigationDestination(
                 icon: Icon(Icons.album),
                 label: 'Albums',
@@ -56,10 +59,14 @@ class MainApp extends StatelessWidget {
             ],
           ),
 
-          body: Scaffold(
-            bottomNavigationBar: BottomAppBar(child: SmallPlayer(),),
-            body: Player(),
-          ),
+          body: const Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+            children: [
+              Player(),
+              SmallPlayer()
+            ],
+          )
         ),
       );
     });
