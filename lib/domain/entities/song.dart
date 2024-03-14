@@ -9,6 +9,7 @@ class Song {
   final int? year;
   final int? size;
   final int? duration;
+  final String? coverArt;
 
   Song(
       {required this.id,
@@ -20,7 +21,8 @@ class Song {
       this.track,
       this.year,
       this.size,
-      this.duration});
+      this.duration,
+      this.coverArt});
 
   factory Song.fromJson(Map<String, dynamic> json) {
     try {
@@ -34,7 +36,8 @@ class Song {
           track: json["track"],
           year: json["year"],
           size: json["size"],
-          duration: json["duration"]);
+          duration: json["duration"],
+          coverArt: json["coverArt"]);
     } catch (_) {
       throw const FormatException("Failed to load song");
     }

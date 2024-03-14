@@ -9,13 +9,13 @@ import "widgets/player.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
+    androidNotificationChannelId: "com.ryanheise.bg_demo.channel.audio",
+    androidNotificationChannelName: "Audio playback",
     androidNotificationOngoing: false,
   );
 
   runApp(ChangeNotifierProvider(
-    create: (context) => PlayerModel(),
+    create: (context) => PlayerModel.instance,
     child: const MainApp(),
   ));
 }

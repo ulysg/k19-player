@@ -32,6 +32,7 @@ class SmallPlayer extends StatelessWidget {
                       return Text(
                         playerModel.mediaItem?.title ?? "",
                         style: const TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis
                       );
                     }
                   ),
@@ -40,6 +41,7 @@ class SmallPlayer extends StatelessWidget {
                     builder: (context, playerModel, child) {
                       return Text(
                         playerModel.mediaItem?.artist ?? "",
+                        overflow: TextOverflow.ellipsis
                       );
                     },
                   )
