@@ -22,31 +22,36 @@ class SmallPlayer extends StatelessWidget {
                 height: 48,
               ),
 
-              Column (
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(width: 12),
 
-                children: [
-                  Consumer<PlayerModel>(
-                    builder: (context, playerModel, child) {
-                      return Text(
-                        playerModel.mediaItem?.title ?? "",
-                        style: const TextStyle(fontSize: 16),
-                        overflow: TextOverflow.ellipsis
-                      );
-                    }
-                  ),
-                    
-                  Consumer<PlayerModel>(
-                    builder: (context, playerModel, child) {
-                      return Text(
-                        playerModel.mediaItem?.artist ?? "",
-                        overflow: TextOverflow.ellipsis
-                      );
-                    },
-                  )
-                ]
+              Flexible(
+                child: Column (
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                  children: [
+                    Consumer<PlayerModel>(
+                      builder: (context, playerModel, child) {
+                        return Text(
+                          playerModel.mediaItem?.title ?? "",
+                          style: const TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis
+                        );
+                      }
+                    ),
+                      
+                    Consumer<PlayerModel>(
+                      builder: (context, playerModel, child) {
+                        return Text(
+                          playerModel.mediaItem?.artist ?? "",
+                          overflow: TextOverflow.ellipsis
+                        );
+                      },
+                    )
+                  ]
+                ),
               ),
+
+              const SizedBox(width: 12),
 
               Consumer<PlayerModel>(
                 builder: (context, playerModel, child) {

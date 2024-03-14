@@ -50,18 +50,32 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const Player(),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
 
-      bottomNavigationBar: InkWell(
-        onTap: () {
+      onPanUpdate: (details) {
+        if (details.delta.dx > 0) {
           Scaffold.of(context).showBottomSheet((builder) {
             return const Player();
           });
-        },
+        }
+      },
 
-        child: const SmallPlayer(),
-      ),
+      child: Scaffold(
+        body: const Player(),
+
+        bottomNavigationBar: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+
+          onTap: () {
+            Scaffold.of(context).showBottomSheet((builder) {
+              return const Player();
+            });
+          },
+
+          child: const SmallPlayer(),
+        ),
+      )
     );
   }
 }

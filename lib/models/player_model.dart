@@ -1,5 +1,3 @@
-import "dart:ffi";
-
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
 import "package:just_audio_background/just_audio_background.dart";
@@ -12,26 +10,27 @@ class PlayerModel extends ChangeNotifier {
   int position = 0;
   int duration = 0;
   MediaItem? mediaItem;
+  int playingIndex = -1;
+  int maxIndex = 0;
+
   static PlayerModel? _instance;
 
   static PlayerModel get instance => _instance ??= PlayerModel._();
 
   PlayerModel._() {
     player.playerStateStream.listen((state) {
-      if (playing != state.playing) {
-        playing = state.playing;
-        notifyListeners();
-      }
+      playing = state.playing && state.processingState == ProcessingState.ready;
+      notifyListeners();
     });
 
     player.positionStream.listen((event) {
-      duration = player.duration?.inSeconds ?? 100;
+      duration = player.duration?.inSeconds ?? 0;
       position = event.inSeconds;
       notifyListeners();
     });
 
     player.durationStream.listen((event) {
-      duration = event?.inSeconds ?? 100;
+      duration = event?.inSeconds ?? 0;
       notifyListeners();
     });
 

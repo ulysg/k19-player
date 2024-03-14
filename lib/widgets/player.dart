@@ -1,6 +1,4 @@
 import "package:flutter/material.dart";
-import "package:just_audio/just_audio.dart";
-import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/player_model.dart";
@@ -25,17 +23,7 @@ class Player extends StatelessWidget {
             height: 288,
           ),
 
-          Consumer<PlayerModel>(
-            builder: (context, playerModel, child) {
-              return Slider(
-                value: playerModel.position.toDouble(),
-                max: playerModel.duration.toDouble(),
-                onChanged: (i) {
-                  playerModel.seek(i.toInt());
-                },
-              );
-            }
-          ),
+          const MusicSlider(),
           
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,5 +89,48 @@ class Player extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MusicSlider extends StatelessWidget {
+  const MusicSlider({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<PlayerModel>(
+      builder: (context, playerModel, child) {
+        return Row(
+          children: [  
+            Text(
+              secondsToString(playerModel.position)
+            ),
+
+            Expanded(
+              child: Slider(
+                value: playerModel.position.toDouble(),
+                max: playerModel.duration.toDouble(),
+                onChanged: (i) {
+                  playerModel.seek(i.toInt());
+                },
+              )
+            ),
+
+            Text(
+              secondsToString(playerModel.duration)
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  secondsToString(int seconds) {
+    Duration duration = Duration(seconds: seconds);
+    String m = duration.inMinutes.remainder(60).toString();
+    String s = duration.inSeconds.remainder(60).toString().padLeft(2, "0");
+
+    return "$m:$s";
   }
 }
