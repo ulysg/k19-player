@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:k19_player/models/player_model.dart";
+import "package:k19_player/widgets/player.dart";
 import "package:k19_player/widgets/playing_image.dart";
 import "package:provider/provider.dart";
 
@@ -67,5 +68,45 @@ class SmallPlayer extends StatelessWidget {
           ),
         )
       );
+  }
+}
+
+class SmallPlayerView extends StatelessWidget {
+  final Widget child;
+
+  const SmallPlayerView({
+    required this.child,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+
+      onPanEnd: (details) {
+        if (details.velocity.pixelsPerSecond.dy < 0) {
+          Scaffold.of(context).showBottomSheet((builder) {
+            return const Player();
+          });
+        }
+      },
+
+      child: Scaffold(
+        body: child,
+
+        bottomNavigationBar: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+
+          onTap: () {
+            Scaffold.of(context).showBottomSheet((builder) {
+              return const Player();
+            });
+          },
+
+          child: const SmallPlayer(),
+        ),
+      )
+    );
   }
 }

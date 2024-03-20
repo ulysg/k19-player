@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:just_audio/just_audio.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/player_model.dart";
@@ -16,9 +17,11 @@ class Player extends StatelessWidget {
       padding: const EdgeInsets.all(36),
 
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
         children: [
+          const SizedBox(height: 0),
+
           const PlayingImage(
             height: 288,
           ),
@@ -26,7 +29,7 @@ class Player extends StatelessWidget {
           const MusicSlider(),
           
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             
             children: [
               Consumer<PlayerModel>(
@@ -38,6 +41,8 @@ class Player extends StatelessWidget {
                   );
                 }
               ),
+
+              const SizedBox(height: 6),
                 
               Consumer<PlayerModel>(
                 builder: (context, playerModel, child) {
@@ -54,14 +59,14 @@ class Player extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
             children: [
-              FilledButton.tonal(
-                onPressed: () async {
-                  List<Song> songs = await Music.instance.getRandomSongs();
-                  PlayerModel.instance.setPlaylist(songs);
-                },
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  return FilledButton.tonal(
+                    onPressed: PlayerModel.player.hasPrevious ? () => PlayerModel.player.seekToPrevious() : null,
 
-                child: const Icon(Icons.skip_previous),
-              ),
+                    child: const Icon(Icons.skip_previous),
+                  );
+              }),
 
               Consumer<PlayerModel>(
                 builder: (context, playerModel, child) {
@@ -77,14 +82,65 @@ class Player extends StatelessWidget {
                 }
               ),
 
-              FilledButton.tonal(
-                onPressed: () {
-                  PlayerModel.player.seekToNext();
-                },
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  return FilledButton.tonal(
+                    onPressed: PlayerModel.player.hasNext ? () => PlayerModel.player.seekToNext() : null,
 
-                child: const Icon(Icons.skip_next),
-              ),
+                    child: const Icon(Icons.skip_next),
+                  );
+              }),
             ],
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+
+            children: [
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  if (PlayerModel.player.loopMode == LoopMode.all) {
+                    return IconButton.filled(
+                      onPressed: () {
+                        PlayerModel.player.setLoopMode(LoopMode.off);
+                      },
+
+                      icon: const Icon(Icons.loop),
+                    );
+                  }
+
+                  return IconButton(
+                      onPressed: () {
+                        PlayerModel.player.setLoopMode(LoopMode.all);
+                      },
+
+                      icon: const Icon(Icons.loop),
+                    );
+                }
+              ),
+
+              Consumer<PlayerModel>(
+                builder: (context, playerModel, child) {
+                  if (PlayerModel.player.shuffleModeEnabled) {
+                    return IconButton.filled(
+                      onPressed: () {
+                        PlayerModel.player.setShuffleModeEnabled(false);
+                      },
+
+                      icon: const Icon(Icons.shuffle),
+                    );
+                  }
+
+                  return IconButton(
+                      onPressed: () {
+                        PlayerModel.player.setShuffleModeEnabled(true);
+                      },
+
+                      icon: const Icon(Icons.shuffle),
+                    );
+                }
+              )
+            ]
           ),
         ],
       ),

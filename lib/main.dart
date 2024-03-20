@@ -1,6 +1,10 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:k19_player/data/music.dart";
+import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
@@ -9,10 +13,18 @@ import "widgets/player.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
-    androidNotificationChannelId: "com.ryanheise.bg_demo.channel.audio",
-    androidNotificationChannelName: "Audio playback",
-    androidNotificationOngoing: false,
+    androidNotificationChannelId: "k19_player",
+    androidNotificationChannelName: "K-19 Player",
+    androidNotificationOngoing: true,
   );
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
+
+  List<Song> songs = await Music.instance.getRandomSongs();
+  PlayerModel.instance.setPlaylist(songs);
 
   runApp(ChangeNotifierProvider(
     create: (context) => PlayerModel.instance,
@@ -36,75 +48,66 @@ class MainApp extends StatelessWidget {
           useMaterial3: true,
         ),
 
-        home: const Scaffold(
-          bottomNavigationBar: NavBar(),
-          body: MainView()
-        ),
+        home: const MainView()
       );
     });
   }
 }
 
-class MainView extends StatelessWidget {
+class MainView extends StatefulWidget {
   const MainView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-
-      onPanUpdate: (details) {
-        if (details.delta.dx > 0) {
-          Scaffold.of(context).showBottomSheet((builder) {
-            return const Player();
-          });
-        }
-      },
-
-      child: Scaffold(
-        body: const Player(),
-
-        bottomNavigationBar: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-
-          onTap: () {
-            Scaffold.of(context).showBottomSheet((builder) {
-              return const Player();
-            });
-          },
-
-          child: const SmallPlayer(),
-        ),
-      )
-    );
-  }
+  State<MainView> createState() => MainViewState();
 }
 
-class NavBar extends StatelessWidget {
-  const NavBar({super.key});
+class MainViewState extends State<MainView> {
+  int currentPageIndex = 0;
 
-    @override
+  @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      onDestinationSelected: (int index) {
-      },
+    return Scaffold(
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
 
-      destinations: const <Widget>[
-        NavigationDestination(
-          icon: Icon(Icons.home),
-          label: 'Home',
+        selectedIndex: currentPageIndex,
+
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.music_note),
+            label: "Playlists",
+          ),
+          
+          NavigationDestination(
+            icon: Icon(Icons.album),
+            label: "Albums",
+          ),
+        ],
+      ),
+
+      body: [
+        const SmallPlayerView(
+          child: Text("lol")
         ),
 
-        NavigationDestination(
-          icon: Icon(Icons.music_note),
-          label: 'Playlists',
+        const SmallPlayerView(
+          child: Text("drop")
         ),
         
-        NavigationDestination(
-          icon: Icon(Icons.album),
-          label: 'Albums',
-        ),
-      ],
+        const SmallPlayerView(
+          child: Text("salut")
+        )
+      ][currentPageIndex],
     );
   }
 }
+
