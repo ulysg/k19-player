@@ -103,15 +103,18 @@ class MainViewState extends State<MainView> {
 
       body: [
         const SmallPlayerView(
-          child: SongView()
+          child: SongView(),
+          title: "Songs",
         ),
 
         const SmallPlayerView(
-          child: Text("drop")
+          child: Text("drop"),
+          title: "Hello"
         ),
         
         const SmallPlayerView(
-          child: Text("salut")
+          child: Text("salut"),
+          title: "Drop"
         )
       ][currentPageIndex],
     );

@@ -79,9 +79,11 @@ class SmallPlayer extends StatelessWidget {
 
 class SmallPlayerView extends StatelessWidget {
   final Widget child;
+  final String title;
 
   const SmallPlayerView({
     required this.child,
+    required this.title,
     super.key,
   });
 
@@ -100,6 +102,10 @@ class SmallPlayerView extends StatelessWidget {
 
       child: Scaffold(
         body: child,
+
+        appBar: AppBar(
+          title: Text(title)
+        ),
 
         bottomNavigationBar: GestureDetector(
           behavior: HitTestBehavior.opaque,

@@ -48,13 +48,18 @@ class PlayerModel extends ChangeNotifier {
     player.seek(Duration(seconds: seconds));
   }
 
-  setPlaylist(List<Song> playlist) {
+  setPlaylist(List<Song> playlist) async {
     ConcatenatingAudioSource source = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: playlist.map(songToAudioSource).toList()
     );
 
-    player.setAudioSource(source);
+    try {
+      await player.setAudioSource(source);
+    }
+    catch (PlayerInterruptedException) {
+      print("lol");
+    }
   }
 
   AudioSource songToAudioSource(Song song) {
@@ -69,5 +74,13 @@ class PlayerModel extends ChangeNotifier {
         artUri: Music.getCoverUri(song),
       )
     );
+  }
+
+  static secondsToString(int seconds) {
+    Duration duration = Duration(seconds: seconds);
+    String m = duration.inMinutes.remainder(60).toString();
+    String s = duration.inSeconds.remainder(60).toString().padLeft(2, "0");
+
+    return "$m:$s";
   }
 }

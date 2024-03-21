@@ -174,7 +174,7 @@ class MusicSlider extends StatelessWidget {
         return Row(
           children: [
             Text(
-              secondsToString(positionDuration.$1)
+              PlayerModel.secondsToString(positionDuration.$1)
             ),
 
             Expanded(
@@ -188,19 +188,11 @@ class MusicSlider extends StatelessWidget {
             ),
 
             Text(
-              secondsToString(positionDuration.$2)
+              PlayerModel.secondsToString(positionDuration.$2)
             ),
           ],
         );
       }
     );
-  }
-
-  secondsToString(int seconds) {
-    Duration duration = Duration(seconds: seconds);
-    String m = duration.inMinutes.remainder(60).toString();
-    String s = duration.inSeconds.remainder(60).toString().padLeft(2, "0");
-
-    return "$m:$s";
   }
 }
