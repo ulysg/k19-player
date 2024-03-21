@@ -56,4 +56,24 @@ class Album {
           : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'parent': parent,
+      'name': name,
+      'isDir': isDir,
+      'coverArt': coverArt,
+      'songCount': songCount,
+      'created': created,
+      'duration': duration,
+      'playCount': playCount,
+      'artistId': artistId,
+      'artist': artist,
+      'year': year,
+      'genre': genre,
+      'songs': songs?.map((song) => song.toJson()).toList(),
+    };
+  }
 }

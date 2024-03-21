@@ -6,9 +6,9 @@ import 'package:k19_player/data/constants.dart';
 import 'package:crypto/crypto.dart';
 
 class HttpHelper {
-  static Future<Map<String, dynamic>> get(String endpoint,
+  Future<Map<String, dynamic>> get(String endpoint,
       [Map<String, dynamic>? pbody]) async {
-    String url = HttpHelper.buildUrl(endpoint, pbody);
+    String url = buildUrl(endpoint, pbody);
     Response r = await http.get(Uri.parse(url));
     if (r.statusCode == 200) {
       return jsonDecode(r.body)["subsonic-response"];
@@ -18,7 +18,7 @@ class HttpHelper {
   }
 
   static String getStream(String id) {
-    return HttpHelper.buildUrl("stream", {'id': id});
+    return buildUrl("stream", {'id': id});
   }
 
   static String buildUrl(String endpoint, [Map<String, dynamic>? pbody]) {

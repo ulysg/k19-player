@@ -34,8 +34,22 @@ class Playlist {
       songCount: json['songCount'],
       duration: json['duration'],
       songs: json.containsKey("entry")
-          ? json["entry"].map((v) => Song.fromJson(v)).toList()
+          ? List<Song>.from(json["entry"].map((v) => Song.fromJson(v)))
           : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'owner': owner,
+      'public': public,
+      'created': created,
+      'changed': changed,
+      'songCount': songCount,
+      'duration': duration,
+      'songs': songs?.map((song) => song.toJson()).toList(),
+    };
   }
 }

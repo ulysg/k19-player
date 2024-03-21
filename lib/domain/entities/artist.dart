@@ -34,10 +34,21 @@ class Artist {
           albumCount: json["albumCount"],
           starred: json["starred"],
           albums: json.containsKey("artist")
-              ? json["artist"].map((v) => Album.fromJson(v)).toList()
+              ? List<Album>.from(json["artist"].map((v) => Album.fromJson(v)))
               : null);
     } catch (_) {
       throw const FormatException("Failed to load artist");
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'id': id,
+      'coverArt': coverArt,
+      'albumCount': albumCount,
+      'starred': starred,
+      'albums': albums?.map((album) => album.toJson()).toList(),
+    };
   }
 }
