@@ -6,7 +6,6 @@ import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
-import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
@@ -103,18 +102,18 @@ class MainViewState extends State<MainView> {
 
       body: [
         const SmallPlayerView(
-          child: SongView(),
           title: "Songs",
+          child: SongView(),
         ),
 
         const SmallPlayerView(
+          title: "Hello",
           child: Text("drop"),
-          title: "Hello"
         ),
         
         const SmallPlayerView(
+          title: "Drop",
           child: Text("salut"),
-          title: "Drop"
         )
       ][currentPageIndex],
     );

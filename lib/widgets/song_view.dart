@@ -23,7 +23,9 @@ class SongView extends StatelessWidget {
 
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () => PlayerModel.instance.setPlaylist(songs.skip(index).toList()),
+              onTap: () async {
+                await PlayerModel.instance.setPlaylist(songs.skip(index).toList());
+              },
 
               child: SongThumbnail(song: songs[index])
             );

@@ -58,18 +58,7 @@ class SmallPlayer extends StatelessWidget {
 
               const SizedBox(width: 12),
 
-              Selector<PlayerModel, bool>(
-                selector: (_, playerModel) => playerModel.playing,
-
-                builder: (context, playing, child) {
-                  IconData icon = playing ? Icons.pause : Icons.play_arrow; 
-
-                  return FilledButton(
-                    onPressed: () {PlayerModel.player.playing ?  PlayerModel.player.pause() : PlayerModel.player.play();},
-                    child: Icon(icon)
-                  );
-                }
-              ),
+              const PlayingButton()
             ]
           ),
         )
@@ -93,7 +82,7 @@ class SmallPlayerView extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
 
       onPanEnd: (details) {
-        if (details.velocity.pixelsPerSecond.dy < 0) {
+        if (details.velocity.pixelsPerSecond.dy < 5) {
           Scaffold.of(context).showBottomSheet((builder) {
             return const Player();
           });

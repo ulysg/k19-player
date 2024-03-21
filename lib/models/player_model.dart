@@ -4,23 +4,37 @@ import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/song.dart";
 
+enum PlayingState {
+  paused,
+  loading,
+  playing,
+}
+
 class PlayerModel extends ChangeNotifier {
   static final player = AudioPlayer();
   
-  bool playing = false;
+  PlayingState playingState = PlayingState.paused;
   int position = 0;
   int duration = 0;
   MediaItem? mediaItem;
   int playingIndex = -1;
   int maxIndex = 0;
 
+  List<Song>? _newPlaylist;
+  
   static PlayerModel? _instance;
 
   static PlayerModel get instance => _instance ??= PlayerModel._();
 
   PlayerModel._() {
     player.playerStateStream.listen((state) {
-      playing = state.playing && state.processingState == ProcessingState.ready;
+      playingState = PlayingState.paused;
+
+      if (state.playing) {
+        playingState = state.processingState == ProcessingState.ready ? PlayingState.playing : PlayingState.loading;
+      }
+
+      // playing = state.playing && state.processingState == ProcessingState.ready;
       notifyListeners();
     });
 
@@ -44,21 +58,27 @@ class PlayerModel extends ChangeNotifier {
     });
   }
 
-  seek(int seconds) {
-    player.seek(Duration(seconds: seconds));
+  seek(int seconds) async {
+    await player.seek(Duration(seconds: seconds));
   }
 
   setPlaylist(List<Song> playlist) async {
+    if (player.playerState.processingState == ProcessingState.loading) {
+      _newPlaylist = playlist;
+      return;
+    }
+
+    _newPlaylist = null;
+
     ConcatenatingAudioSource source = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: playlist.map(songToAudioSource).toList()
     );
 
-    try {
-      await player.setAudioSource(source);
-    }
-    catch (PlayerInterruptedException) {
-      print("lol");
+    await player.setAudioSource(source);
+
+    if (_newPlaylist != null) {
+      setPlaylist(_newPlaylist!);
     }
   }
 

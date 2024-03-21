@@ -72,21 +72,7 @@ class Player extends StatelessWidget {
                   );
               }),
 
-              Selector<PlayerModel, bool>(
-                selector: (_, playerModel) => playerModel.playing,
-
-                builder: (context, playing, child) {
-                  IconData icon = playing ? Icons.pause : Icons.play_arrow; 
-
-                  return FilledButton(
-                    onPressed: () {
-                      PlayerModel.player.playing ?  PlayerModel.player.pause() : PlayerModel.player.play();
-                    },
-
-                    child: Icon(icon)
-                  );
-                }
-              ),
+              const PlayingButton(),
 
               Selector<PlayerModel, bool>(
                 selector: (_, __) => PlayerModel.player.hasNext,
@@ -191,6 +177,53 @@ class MusicSlider extends StatelessWidget {
               PlayerModel.secondsToString(positionDuration.$2)
             ),
           ],
+        );
+      }
+    );
+  }
+}
+
+class PlayingButton extends StatelessWidget {
+  const PlayingButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<PlayerModel, PlayingState>(
+      selector: (_, playerModel) => playerModel.playingState,
+
+      builder: (context, playingState, child) {
+        Widget icon;
+
+        switch (playingState) {
+          case PlayingState.paused:
+            icon = const Icon(Icons.play_arrow);
+            break;
+
+          case PlayingState.playing:
+            icon = const Icon(Icons.pause);
+            break;
+
+          case PlayingState.loading:
+            icon = SizedBox(
+              height: 24,
+              width: 24,
+
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.onPrimary
+              )
+            );
+
+            break;
+        }
+
+        return FilledButton(
+          onPressed: () {
+            PlayerModel.player.playing ?  PlayerModel.player.pause() : PlayerModel.player.play();
+          },
+
+          child: icon
         );
       }
     );
