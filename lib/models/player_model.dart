@@ -6,6 +6,7 @@ import "package:k19_player/domain/entities/song.dart";
 
 class PlayerModel extends ChangeNotifier {
   static final player = AudioPlayer();
+  
   bool playing = false;
   int position = 0;
   int duration = 0;

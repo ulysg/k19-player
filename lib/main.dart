@@ -1,15 +1,15 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter/widgets.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/song.dart";
+import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
+import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/small_player.dart";
+import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
-
-import "widgets/player.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
@@ -24,12 +24,19 @@ Future<void> main() async {
   ));
 
   List<Song> songs = await Music.instance.getRandomSongs();
+  ContentModel.instance.songs = songs;
   PlayerModel.instance.setPlaylist(songs);
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => PlayerModel.instance,
-    child: const MainApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PlayerModel>(create: (_) => PlayerModel.instance),
+        ChangeNotifierProvider<ContentModel>(create: (_) => ContentModel.instance),
+      ],
+
+      child: const MainApp(),
+    )
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -96,7 +103,7 @@ class MainViewState extends State<MainView> {
 
       body: [
         const SmallPlayerView(
-          child: Text("lol")
+          child: SongView()
         ),
 
         const SmallPlayerView(

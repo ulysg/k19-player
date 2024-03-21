@@ -30,20 +30,24 @@ class SmallPlayer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
                   children: [
-                    Consumer<PlayerModel>(
-                      builder: (context, playerModel, child) {
+                    Selector<PlayerModel, String?>(
+                      selector: (_, playerModel) => playerModel.mediaItem?.title,
+
+                      builder: (context, title, child) {
                         return Text(
-                          playerModel.mediaItem?.title ?? "",
+                          title ?? "",
                           style: const TextStyle(fontSize: 16),
                           overflow: TextOverflow.ellipsis
                         );
                       }
                     ),
                       
-                    Consumer<PlayerModel>(
-                      builder: (context, playerModel, child) {
+                    Selector<PlayerModel, String?>(
+                      selector: (_, playerModel) => playerModel.mediaItem?.artist,
+
+                      builder: (context, artist, child) {
                         return Text(
-                          playerModel.mediaItem?.artist ?? "",
+                          artist ?? "",
                           overflow: TextOverflow.ellipsis
                         );
                       },
@@ -54,9 +58,11 @@ class SmallPlayer extends StatelessWidget {
 
               const SizedBox(width: 12),
 
-              Consumer<PlayerModel>(
-                builder: (context, playerModel, child) {
-                  IconData icon = playerModel.playing ? Icons.pause : Icons.play_arrow; 
+              Selector<PlayerModel, bool>(
+                selector: (_, playerModel) => playerModel.playing,
+
+                builder: (context, playing, child) {
+                  IconData icon = playing ? Icons.pause : Icons.play_arrow; 
 
                   return FilledButton(
                     onPressed: () {PlayerModel.player.playing ?  PlayerModel.player.pause() : PlayerModel.player.play();},

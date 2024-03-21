@@ -15,10 +15,10 @@ class PlayingImage extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(height / 12),
 
-      child: Consumer<PlayerModel>(
-        builder: (context, playerModel, child) {
-          String? image = playerModel.mediaItem?.artUri.toString();
+      child: Selector<PlayerModel, String?>(
+        selector: (_, playerModel) => playerModel.mediaItem?.artUri.toString(),
 
+        builder: (context, image, child) {
           return Stack(
             children: [
               Container(
