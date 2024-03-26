@@ -21,6 +21,7 @@ class PlayerModel extends ChangeNotifier {
   int maxIndex = 0;
 
   List<Song>? _newPlaylist;
+  int? _newIndex;
   
   static PlayerModel? _instance;
 
@@ -62,23 +63,25 @@ class PlayerModel extends ChangeNotifier {
     await player.seek(Duration(seconds: seconds));
   }
 
-  setPlaylist(List<Song> playlist) async {
+  setPlaylist(List<Song> playlist, {int index = 0}) async {
     if (player.playerState.processingState == ProcessingState.loading) {
       _newPlaylist = playlist;
+      _newIndex = index;
       return;
     }
 
     _newPlaylist = null;
+    _newIndex = null;
 
     ConcatenatingAudioSource source = ConcatenatingAudioSource(
       useLazyPreparation: true,
       children: playlist.map(songToAudioSource).toList()
     );
 
-    await player.setAudioSource(source);
+    await player.setAudioSource(source, initialIndex: index);
 
-    if (_newPlaylist != null) {
-      setPlaylist(_newPlaylist!);
+    if (_newPlaylist != null && _newIndex != null) {
+      setPlaylist(_newPlaylist!, index: _newIndex!);
     }
   }
 
