@@ -1,23 +1,41 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:just_audio_background/just_audio_background.dart";
+import "package:k19_player/data/music.dart";
+import "package:k19_player/domain/entities/song.dart";
+import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/small_player.dart";
+import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
-
-import "widgets/player.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
-    androidNotificationChannelId: "com.ryanheise.bg_demo.channel.audio",
-    androidNotificationChannelName: "Audio playback",
-    androidNotificationOngoing: false,
+    androidNotificationChannelId: "k19_player",
+    androidNotificationChannelName: "K-19 Player",
+    androidNotificationOngoing: true,
   );
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => PlayerModel.instance,
-    child: const MainApp(),
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
   ));
+
+  List<Song> songs = await Music.instance.getRandomSongs();
+  ContentModel.instance.songs = songs;
+  PlayerModel.instance.setPlaylist(songs);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PlayerModel>(create: (_) => PlayerModel.instance),
+        ChangeNotifierProvider<ContentModel>(create: (_) => ContentModel.instance),
+      ],
+
+      child: const MainApp(),
+    )
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -36,61 +54,69 @@ class MainApp extends StatelessWidget {
           useMaterial3: true,
         ),
 
-        home: const Scaffold(
-          bottomNavigationBar: NavBar(),
-          body: MainView()
-        ),
+        home: const MainView()
       );
     });
   }
 }
 
-class MainView extends StatelessWidget {
+class MainView extends StatefulWidget {
   const MainView({super.key});
+
+  @override
+  State<MainView> createState() => MainViewState();
+}
+
+class MainViewState extends State<MainView> {
+  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Player(),
-
-      bottomNavigationBar: InkWell(
-        onTap: () {
-          Scaffold.of(context).showBottomSheet((builder) {
-            return const Player();
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
           });
         },
 
-        child: const SmallPlayer(),
+        selectedIndex: currentPageIndex,
+
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.music_note),
+            label: "Playlists",
+          ),
+          
+          NavigationDestination(
+            icon: Icon(Icons.album),
+            label: "Albums",
+          ),
+        ],
       ),
-    );
-  }
-}
 
-class NavBar extends StatelessWidget {
-  const NavBar({super.key});
-
-    @override
-  Widget build(BuildContext context) {
-    return NavigationBar(
-      onDestinationSelected: (int index) {
-      },
-
-      destinations: const <Widget>[
-        NavigationDestination(
-          icon: Icon(Icons.home),
-          label: 'Home',
+      body: [
+        const SmallPlayerView(
+          title: "Songs",
+          child: SongView(),
         ),
 
-        NavigationDestination(
-          icon: Icon(Icons.music_note),
-          label: 'Playlists',
+        const SmallPlayerView(
+          title: "Hello",
+          child: Text("drop"),
         ),
         
-        NavigationDestination(
-          icon: Icon(Icons.album),
-          label: 'Albums',
-        ),
-      ],
+        const SmallPlayerView(
+          title: "Drop",
+          child: Text("salut"),
+        )
+      ][currentPageIndex],
     );
   }
 }
+
