@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:k19_player/domain/entities/album.dart";
 import "package:k19_player/models/content_model.dart";
+import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
 import "package:provider/provider.dart";
 
@@ -15,14 +16,20 @@ class AlbumView extends StatelessWidget {
       selector: (_, contentModel) => contentModel.albums,
 
       builder: (context, albums, child) {
-        return GridView.count(
-          crossAxisCount: 3,
+        return GridView.builder(
+          padding: const EdgeInsets.all(24),
+          itemCount: albums.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
 
-          children: albums.map(
-            (album) => Text(
-              album.title ?? ""
-            )
-          ).toList()
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () async {
+                await PlayerModel.instance.setPlaylist(albums[index].songs!);
+              },
+
+              child: AlbumThumbnail(album: albums[index])
+            );
+          },
         );
       }
     );

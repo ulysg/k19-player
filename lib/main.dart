@@ -3,9 +3,11 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
+import "package:k19_player/domain/entities/album.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
+import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
@@ -24,7 +26,9 @@ Future<void> main() async {
 
   List<Song> songs = await Music.instance.getRandomSongs();
   ContentModel.instance.songs = songs;
-  PlayerModel.instance.setPlaylist(songs);
+
+  List<Album> albums = await Music.instance.getAlbums();
+  ContentModel.instance.albums = albums;
 
   runApp(
     MultiProvider(
@@ -84,37 +88,37 @@ class MainViewState extends State<MainView> {
 
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.home),
-            label: "Home",
+            icon: Icon(Icons.album),
+            label: "Albums",
           ),
 
           NavigationDestination(
-            icon: Icon(Icons.music_note),
+            icon: Icon(Icons.featured_play_list),
             label: "Playlists",
           ),
           
           NavigationDestination(
-            icon: Icon(Icons.album),
-            label: "Albums",
+            icon: Icon(Icons.music_note),
+            label: "Songs",
           ),
         ],
       ),
 
       body: [
         const SmallPlayerView(
-          title: "Songs",
-          child: SongView(),
-        ),
-
-        const SmallPlayerView(
-          title: "Hello",
-          child: Text("drop"),
+          title: "Albums",
+          child: AlbumView(),
         ),
         
         const SmallPlayerView(
-          title: "Drop",
-          child: Text("salut"),
-        )
+          title: "Playlists",
+          child: Text("Playlist"),
+        ),
+
+        const SmallPlayerView(
+          title: "Songs",
+          child: SongView(),
+        ),
       ][currentPageIndex],
     );
   }
