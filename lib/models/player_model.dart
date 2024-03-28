@@ -94,7 +94,7 @@ class PlayerModel extends ChangeNotifier {
         title: song.title ?? "notitle",
         artist: song.artist ?? "noartist",
         album: song.album ?? "noalbum",
-        artUri: Music.getCoverUri(song),
+        artUri: Music.getSongCover(song),
       )
     );
   }

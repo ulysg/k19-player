@@ -21,8 +21,12 @@ class Music {
     return Uri.parse(HttpHelper.getStream(song.id));
   }
 
-  static Uri getCoverUri(Song song) {
+  static Uri getSongCover(Song song) {
     return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": song.coverArt}));
+  }
+
+  static Uri getAlbumCover(Album album) {
+    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
   }
 
   Future<List<Playlist>> getPlaylists() async {
@@ -31,6 +35,10 @@ class Music {
 
   Future<List<Album>> getAlbums() async {
     return subsonicRepository.getAlbums();
+  }
+
+  Future<Album> getAlbum(String id) async {
+    return subsonicRepository.getAlbum(id);
   }
 
   Future<List<Artist>> getArtists() async {

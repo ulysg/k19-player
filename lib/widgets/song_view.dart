@@ -52,7 +52,7 @@ class SongThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
 
       children: [
-        CoverArt(height: 48, image: Music.getCoverUri(song).toString()),
+        CoverArt(height: 48, image: Music.getSongCover(song).toString()),
 
         const SizedBox(width: 24),
 

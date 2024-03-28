@@ -40,7 +40,7 @@ class SubsonicRepository {
   }
 
   Future<List<Album>> getAlbums() async {
-    final r = await HttpHelper.get("getAlbumList");
+    final r = await HttpHelper.get("getAlbumList", {"type": "random"});
     return _parseResponse<Album>(Album.fromJson, r, ["albumList", "album"]);
   }
 
@@ -61,7 +61,7 @@ class SubsonicRepository {
 
   Future<Album> getAlbum(String id) async {
     final r = await HttpHelper.get("getAlbum", {"id": id});
-    return Album.fromJson(r);
+    return Album.fromJson(r["album"]);
   }
 
   Future<Song> getSong(String id) async {

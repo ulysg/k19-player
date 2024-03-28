@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:k19_player/data/music.dart";
+import "package:k19_player/data/repositories/subsonic_repository.dart";
 import "package:k19_player/domain/entities/album.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
@@ -17,14 +19,15 @@ class AlbumView extends StatelessWidget {
 
       builder: (context, albums, child) {
         return GridView.builder(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(12),
           itemCount: albums.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () async {
-                await PlayerModel.instance.setPlaylist(albums[index].songs!);
+                Album album = await Music.instance.getAlbum(albums[index].id);
+                await PlayerModel.instance.setPlaylist(album.songs!);
               },
 
               child: AlbumThumbnail(album: albums[index])
@@ -48,9 +51,23 @@ class AlbumThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const CoverArt(height: 48),
+        CoverArt(
+          height: 96,
+          image: Music.getAlbumCover(album).toString(),
+        ),
+        
+        const SizedBox(height: 6),
 
-        Text(album.title ?? ""),
+        Text(
+          album.title ?? "",
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 18)
+        ),
+
+        Text(
+          album.artist ?? "",
+          overflow: TextOverflow.ellipsis,
+        )
       ],
     );
   }
