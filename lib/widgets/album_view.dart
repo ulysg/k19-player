@@ -5,10 +5,11 @@ import "package:k19_player/domain/entities/album.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
+import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
 
-class AlbumView extends StatelessWidget {
-  const AlbumView({
+class AlbumGrid extends StatelessWidget {
+  const AlbumGrid({
     super.key,
   });
 
@@ -24,10 +25,17 @@ class AlbumView extends StatelessWidget {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
           itemBuilder: (context, index) {
-            return InkWell(
+            return GestureDetector(
               onTap: () async {
-                Album album = await Music.instance.getAlbum(albums[index].id);
-                await PlayerModel.instance.setPlaylist(album.songs!);
+                Navigator.push(
+                  context,
+
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return AlbumView(album: albums[index]);
+                    }
+                  )
+                );
               },
 
               child: AlbumThumbnail(album: albums[index])
@@ -61,7 +69,7 @@ class AlbumThumbnail extends StatelessWidget {
         Text(
           album.title ?? "",
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 18)
+          style: const TextStyle(fontSize: 16)
         ),
 
         Text(
@@ -70,5 +78,19 @@ class AlbumThumbnail extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+class AlbumView extends StatelessWidget {
+	final Album album;
+	
+  const AlbumView({
+    super.key,
+		required this.album,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+		return Text(album.title ?? "");
   }
 }
