@@ -1,7 +1,10 @@
+import "dart:ffi";
+
 import "package:flutter/material.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/data/repositories/subsonic_repository.dart";
 import "package:k19_player/domain/entities/album.dart";
+import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
@@ -91,6 +94,85 @@ class AlbumView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-		return Text(album.title ?? "");
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+      children: [
+        CoverArt(
+            height: 144,
+            image: Music.getAlbumCover(album).toString()
+          ),
+        
+    		Text(
+          album.title ?? "", 
+          style: const TextStyle(fontSize: 18)
+        ),
+
+        Text(
+          album.artist ?? ""
+        ),
+        
+        ListView.separated(
+          padding: const EdgeInsets.all(24),
+          itemCount: album.songs!.length,
+
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () async {
+                await PlayerModel.instance.setPlaylist(album.songs!, index: index);
+                await PlayerModel.player.play();
+              },
+
+              child: TrackThumbnail(song: album.songs![index], index: index + 1)
+            );
+          },
+
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
+        )
+      ],
+    );
+  }
+}
+
+class TrackThumbnail extends StatelessWidget {
+  final Song song;
+  final int index;
+
+  const TrackThumbnail({
+    super.key,
+    required this.song,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+
+      children: [
+        Text(index.toString()),
+
+        const SizedBox(width: 24),
+
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              Text(
+                song.title ?? "",
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis
+              ),
+
+              Text(
+                song.artist ?? "",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

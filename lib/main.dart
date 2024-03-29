@@ -15,9 +15,9 @@ import "package:provider/provider.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
-    androidNotificationChannelId: "k19_player",
-    androidNotificationChannelName: "K-19 Player",
-    androidNotificationOngoing: true,
+    androidNotificationChannelId: "ch.ulys.k19_player",
+    androidNotificationChannelName: "Audio playback",
+    androidNotificationOngoing: true,  
   );
 
   WidgetsFlutterBinding.ensureInitialized();
