@@ -78,12 +78,12 @@ class Music {
     List<Artist> artists = await subsonicRepository.getArtists();
     List<Album> albums = await subsonicRepository.getAlbums();
     List<Playlist> playlists = await subsonicRepository.getPlaylists();
-    List<Song> songs = await subsonicRepository.getAllSongs();
+    // List<Song> songs = await subsonicRepository.getAllSongs();
 
     await dbRepository.setArtists(artists);
     await dbRepository.setAlbums(albums);
     await dbRepository.setPlaylist(playlists);
-    await dbRepository.setSongs(songs);
+    // await dbRepository.setSongs(songs);
     await dbRepository.setLastUpdate(DateTime.now());
   }
 
