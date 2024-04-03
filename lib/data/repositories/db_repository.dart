@@ -35,25 +35,25 @@ class DbRepository {
   Future setArtists(List<Artist> artists) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        'artists', artists.map((v) => v.toJson().toString()).toList());
+        'artists', artists.map((v) => jsonEncode(v.toJson())).toList());
   }
 
   Future setSongs(List<Song> songs) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        'songs', songs.map((v) => v.toJson().toString()).toList());
+        'songs', songs.map((v) => jsonEncode(v.toJson())).toList());
   }
 
   Future setPlaylist(List<Playlist> playlists) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        "playlists", playlists.map((v) => v.toJson().toString()).toList());
+        "playlists", playlists.map((v) => jsonEncode(v.toJson())).toList());
   }
 
   Future setAlbums(List<Album> albums) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        "albums", albums.map((v) => v.toJson().toString()).toList());
+        "albums", albums.map((v) => jsonEncode(v.toJson())).toList());
   }
 
   Future<List<Song>> getSongs({int size = 10}) async {
