@@ -69,8 +69,9 @@ class SmallPlayer extends StatelessWidget {
 class SmallPlayerView extends StatelessWidget {
   final Widget child;
   final String title;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-  const SmallPlayerView({
+  SmallPlayerView({
     required this.child,
     required this.title,
     super.key,
@@ -82,7 +83,7 @@ class SmallPlayerView extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
 
       onPanEnd: (details) {
-        if (details.velocity.pixelsPerSecond.dy < 5) {
+        if (details.velocity.pixelsPerSecond.dy < -5) {
           Scaffold.of(context).showBottomSheet((builder) {
             return const Player();
           });
@@ -90,10 +91,27 @@ class SmallPlayerView extends StatelessWidget {
       },
 
       child: Scaffold(
-        body: child,
-
+        body: NavigatorPopHandler(
+          onPop: ()  => navigatorKey.currentState!.maybePop(),
+          
+          child: Navigator(
+            key: navigatorKey,
+            
+            onGenerateRoute: (_) => MaterialPageRoute(
+              builder: (context) {
+                return child;
+              }  
+            )
+          ),
+        ),
+        
         appBar: AppBar(
-          title: Text(title)
+          title: Text(title),
+          
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => navigatorKey.currentState!.maybePop()
+          ),
         ),
 
         bottomNavigationBar: GestureDetector(

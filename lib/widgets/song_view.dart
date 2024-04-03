@@ -25,6 +25,7 @@ class SongView extends StatelessWidget {
             return InkWell(
               onTap: () async {
                 await PlayerModel.instance.setPlaylist(songs, index: index);
+                await PlayerModel.player.play();
               },
 
               child: SongThumbnail(song: songs[index])
@@ -52,7 +53,7 @@ class SongThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
 
       children: [
-        CoverArt(height: 48, image: Music.getCoverUri(song).toString()),
+        CoverArt(height: 48, image: Music.getSongCover(song).toString()),
 
         const SizedBox(width: 24),
 

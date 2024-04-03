@@ -4,12 +4,12 @@ class Song {
   final bool? isDir;
   final bool? isVideo;
   final String? type;
-  final String albumId;
+  final String? albumId;
   final String? album;
   final String? artistId;
   final String? artist;
   final String? coverArt;
-  final int duration;
+  final int? duration;
   final int? bitRate;
   final int? userRating;
   final int? averageRating;
@@ -29,12 +29,12 @@ class Song {
     this.isDir,
     this.isVideo,
     this.type,
-    required this.albumId,
+    this.albumId,
     this.album,
     this.artistId,
     this.artist,
     this.coverArt,
-    required this.duration,
+    this.duration,
     this.bitRate,
     this.userRating,
     this.averageRating,
@@ -75,5 +75,33 @@ class Song {
       contentType: json['contentType'],
       path: json['path'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'parent': parent,
+      'isDir': isDir,
+      'isVideo': isVideo,
+      'type': type,
+      'albumId': albumId,
+      'album': album,
+      'artistId': artistId,
+      'artist': artist,
+      'coverArt': coverArt,
+      'duration': duration,
+      'bitRate': bitRate,
+      'userRating': userRating,
+      'averageRating': averageRating,
+      'title': title,
+      'track': track,
+      'year': year,
+      'genre': genre,
+      'size': size,
+      'discNumber': discNumber,
+      'suffix': suffix,
+      'contentType': contentType,
+      'path': path,
+    };
   }
 }

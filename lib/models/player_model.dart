@@ -31,7 +31,7 @@ class PlayerModel extends ChangeNotifier {
     player.playerStateStream.listen((state) {
       playingState = PlayingState.paused;
 
-      if (state.playing) {
+      if (state.playing && state.processingState != ProcessingState.completed) {
         playingState = state.processingState == ProcessingState.ready ? PlayingState.playing : PlayingState.loading;
       }
 
@@ -94,7 +94,7 @@ class PlayerModel extends ChangeNotifier {
         title: song.title ?? "notitle",
         artist: song.artist ?? "noartist",
         album: song.album ?? "noalbum",
-        artUri: Music.getCoverUri(song),
+        artUri: Music.getSongCover(song),
       )
     );
   }

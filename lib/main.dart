@@ -1,6 +1,7 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/album.dart";
@@ -14,9 +15,9 @@ import "package:provider/provider.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
-    androidNotificationChannelId: "k19_player",
-    androidNotificationChannelName: "K-19 Player",
-    androidNotificationOngoing: true,
+    androidNotificationChannelId: "ch.ulys.k19_player",
+    androidNotificationChannelName: "Audio playback",
+    androidNotificationOngoing: true,  
   );
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -105,19 +106,22 @@ class MainViewState extends State<MainView> {
       ),
 
       body: [
-        const SmallPlayerView(
+        SmallPlayerView(
+          key: UniqueKey(),
           title: "Albums",
-          child: AlbumView(),
+          child: const AlbumGrid(),
         ),
         
-        const SmallPlayerView(
+        SmallPlayerView(
+          key: UniqueKey(),
           title: "Playlists",
-          child: Text("Playlist"),
+          child: const Text("Playlist"),
         ),
 
-        const SmallPlayerView(
+        SmallPlayerView(
+          key: UniqueKey(),
           title: "Songs",
-          child: SongView(),
+          child: const SongView(),
         ),
       ][currentPageIndex],
     );
