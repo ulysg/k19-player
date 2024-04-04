@@ -18,8 +18,6 @@ class AlbumGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NavigatorState navigator = Navigator.of(context);
-
     return Selector<ContentModel, List<Album>>(
       selector: (_, contentModel) => contentModel.albums,
 
@@ -32,13 +30,12 @@ class AlbumGrid extends StatelessWidget {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () async {
-                Album album = await Music.instance.getAlbum(albums[index].id);
-                print(album.songs);
-
-                navigator.push(
+                Navigator.push(
+                  context,
+                
                   MaterialPageRoute(
                     builder: (context) {
-                      return AlbumView(album: album);
+                      return AlbumView(album: albums[index]);
                     }
                   )
                 );
@@ -114,23 +111,27 @@ class AlbumView extends StatelessWidget {
         Text(
           album.artist ?? ""
         ),
-        
-        ListView.separated(
-          padding: const EdgeInsets.all(24),
-          itemCount: album.songs!.length,
 
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () async {
-                await PlayerModel.instance.setPlaylist(album.songs!, index: index);
-                await PlayerModel.player.play();
-              },
+        SizedBox(
+          height: 240,
 
-              child: TrackThumbnail(song: album.songs![index], index: index + 1)
-            );
-          },
+          child: ListView.separated(
+            padding: const EdgeInsets.all(24),
+            itemCount: album.songs!.length,
 
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () async {
+                  await PlayerModel.instance.setPlaylist(album.songs!, index: index);
+                  await PlayerModel.player.play();
+                },
+
+                child: TrackThumbnail(song: album.songs![index], index: index + 1)
+              );
+            },
+
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+        )
         )
       ],
     );
