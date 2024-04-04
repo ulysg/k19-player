@@ -45,8 +45,11 @@ class SubsonicRepository {
 
   Future<List<Playlist>> getPlaylists({String? username}) async {
     final r = await _httpHelper.get("getPlaylists", {"username": username});
-    return _parseResponse<Playlist>(
+    List<Playlist> playlists = _parseResponse<Playlist>(
         Playlist.fromJson, r, ["playlists", "playlist"]);
+    return await Future.wait(playlists.map((v) async {
+      return await getPlaylist(v.id);
+    }));
   }
 
   Future<List<Album>> getAlbums() async {
