@@ -50,7 +50,7 @@ class SongThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
       children: [
         CoverArt(height: 48, image: Music.getSongCover(song).toString()),
@@ -58,6 +58,9 @@ class SongThumbnail extends StatelessWidget {
         const SizedBox(width: 24),
 
         Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -75,6 +78,10 @@ class SongThumbnail extends StatelessWidget {
             ],
           ),
         ),
+
+        const SizedBox(width: 12),
+
+        Text(PlayerModel.secondsToString(song.duration ?? 0)),
       ],
     );
   }

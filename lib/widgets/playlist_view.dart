@@ -9,8 +9,8 @@ import "package:k19_player/widgets/playing_image.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
 
-class PlaylistGrid extends StatelessWidget {
-  const PlaylistGrid({
+class PlaylistList extends StatelessWidget {
+  const PlaylistList({
     super.key,
   });
 
@@ -20,10 +20,9 @@ class PlaylistGrid extends StatelessWidget {
       selector: (_, contentModel) => contentModel.playlists,
 
       builder: (context, playlists, child) {
-        return GridView.builder(
+        return ListView.separated(
           padding: const EdgeInsets.all(24),
           itemCount: playlists.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
           itemBuilder: (context, index) {
             return GestureDetector(
@@ -33,10 +32,16 @@ class PlaylistGrid extends StatelessWidget {
                 
                   MaterialPageRoute(
                     builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.all(24),
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text(playlists[index].name ?? "")
+                        ),
 
-                        child: PlaylistView(playlist: playlists[index])
+                        body: Padding(
+                          padding: const EdgeInsets.all(24),
+
+                          child: PlaylistView(playlist: playlists[index])
+                        )
                       );
                     }
                   )
@@ -46,6 +51,8 @@ class PlaylistGrid extends StatelessWidget {
               child: PlaylistThumbnail(playlist: playlists[index])
             );
           },
+
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
         );
       }
     );
@@ -62,19 +69,30 @@ class PlaylistThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
       children: [
-        CoverArt(
-          height: 96,
-          image: Music.getPlaylistCover(playlist).toString(),
+        CoverArt(height: 48, image: Music.getPlaylistCover(playlist).toString()),
+
+        const SizedBox(width: 24),
+
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+
+          child: Text(
+            playlist.name ?? "",
+            style: const TextStyle(fontSize: 16),
+            overflow: TextOverflow.ellipsis,
+          )
         ),
-        
-        const SizedBox(height: 6),
+
+        const SizedBox(width: 12),
 
         Text(
-          playlist.name ?? "",
+          playlist.songCount.toString(), 
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16)
         ),
       ],
     );
@@ -96,7 +114,7 @@ class PlaylistView extends StatelessWidget {
 
       children: [
         CoverArt(
-          height: 144,
+          height: 120,
           image: Music.getPlaylistCover(playlist).toString()
         ),
 
@@ -121,8 +139,8 @@ class PlaylistView extends StatelessWidget {
           children: [
             FilledButton(
               onPressed: () async {
-                await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
                 await PlayerModel.player.setShuffleModeEnabled(false);
+                await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
                 await PlayerModel.player.play();
               },
               child: const Icon(Icons.play_arrow),
@@ -130,8 +148,8 @@ class PlaylistView extends StatelessWidget {
             
             FilledButton(
               onPressed: () async {
-                await PlayerModel.instance.setPlaylist(playlist.songs!);
                 await PlayerModel.player.setShuffleModeEnabled(true);
+                await PlayerModel.instance.setPlaylist(playlist.songs!);
                 await PlayerModel.player.play();
               },
               child: const Icon(Icons.shuffle),
@@ -139,9 +157,10 @@ class PlaylistView extends StatelessWidget {
           ]
         ),
 
+        const SizedBox(height: 12),
+
         Expanded(
           child: ListView.separated(
-            padding: const EdgeInsets.all(24),
             itemCount: playlist.songs!.length,
 
             itemBuilder: (context, index) {
@@ -179,11 +198,14 @@ class TrackThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
 
       children: [
-        Text(index.toString()),
+        CoverArt(height: 36, image: Music.getSongCover(song).toString()),
 
         const SizedBox(width: 24),
 
         Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -201,6 +223,10 @@ class TrackThumbnail extends StatelessWidget {
             ],
           ),
         ),
+
+        const SizedBox(width: 12),
+
+        Text(PlayerModel.secondsToString(song.duration ?? 0)),
       ],
     );
   }

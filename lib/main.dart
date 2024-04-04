@@ -122,7 +122,7 @@ class MainViewState extends State<MainView> {
         SmallPlayerView(
           key: UniqueKey(),
           title: "Playlists",
-          child: const PlaylistGrid(),
+          child: const PlaylistList(),
         ),
 
         SmallPlayerView(

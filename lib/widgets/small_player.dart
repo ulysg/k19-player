@@ -99,21 +99,18 @@ class SmallPlayerView extends StatelessWidget {
             
             onGenerateRoute: (_) => MaterialPageRoute(
               builder: (context) {
-                return child;
+                return Scaffold(
+                  appBar: AppBar(
+                    title: Text(title)
+                  ),
+
+                  body: child,
+                );
               }  
             )
           ),
         ),
         
-        appBar: AppBar(
-          title: Text(title),
-          
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => navigatorKey.currentState!.maybePop()
-          ),
-        ),
-
         bottomNavigationBar: GestureDetector(
           behavior: HitTestBehavior.opaque,
 

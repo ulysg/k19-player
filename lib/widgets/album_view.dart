@@ -33,10 +33,16 @@ class AlbumGrid extends StatelessWidget {
                 
                   MaterialPageRoute(
                     builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.all(24),
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text(albums[index].name ?? "")
+                        ),
 
-                        child: AlbumView(album: albums[index])
+                        body: Padding(
+                          padding: const EdgeInsets.all(24),
+
+                          child: AlbumView(album: albums[index])
+                        )
                       );
                     }
                   )
@@ -132,8 +138,8 @@ class AlbumView extends StatelessWidget {
           children: [
             FilledButton(
               onPressed: () async {
-                await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
                 await PlayerModel.player.setShuffleModeEnabled(false);
+                await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
                 await PlayerModel.player.play();
               },
               child: const Icon(Icons.play_arrow),
@@ -141,8 +147,8 @@ class AlbumView extends StatelessWidget {
             
             FilledButton(
               onPressed: () async {
-                await PlayerModel.instance.setPlaylist(album.songs!);
                 await PlayerModel.player.setShuffleModeEnabled(true);
+                await PlayerModel.instance.setPlaylist(album.songs!);
                 await PlayerModel.player.play();
               },
               child: const Icon(Icons.shuffle),
@@ -150,9 +156,10 @@ class AlbumView extends StatelessWidget {
           ]
         ),
 
+        const SizedBox(height: 12),
+
         Expanded(
           child: ListView.separated(
-            padding: const EdgeInsets.all(24),
             itemCount: album.songs!.length,
 
             itemBuilder: (context, index) {
