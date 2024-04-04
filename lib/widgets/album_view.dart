@@ -18,6 +18,8 @@ class AlbumGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NavigatorState navigator = Navigator.of(context);
+
     return Selector<ContentModel, List<Album>>(
       selector: (_, contentModel) => contentModel.albums,
 
@@ -30,12 +32,13 @@ class AlbumGrid extends StatelessWidget {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () async {
-                Navigator.push(
-                  context,
+                Album album = await Music.instance.getAlbum(albums[index].id);
+                print(album.songs);
 
+                navigator.push(
                   MaterialPageRoute(
                     builder: (context) {
-                      return AlbumView(album: albums[index]);
+                      return AlbumView(album: album);
                     }
                   )
                 );
