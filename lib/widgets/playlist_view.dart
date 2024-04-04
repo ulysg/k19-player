@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/data/repositories/subsonic_repository.dart";
-import "package:k19_player/domain/entities/album.dart";
+import "package:k19_player/domain/entities/playlist.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
@@ -9,20 +9,20 @@ import "package:k19_player/widgets/playing_image.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
 
-class AlbumGrid extends StatelessWidget {
-  const AlbumGrid({
+class PlaylistGrid extends StatelessWidget {
+  const PlaylistGrid({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ContentModel, List<Album>>(
-      selector: (_, contentModel) => contentModel.albums,
+    return Selector<ContentModel, List<Playlist>>(
+      selector: (_, contentModel) => contentModel.playlists,
 
-      builder: (context, albums, child) {
+      builder: (context, playlists, child) {
         return GridView.builder(
           padding: const EdgeInsets.all(24),
-          itemCount: albums.length,
+          itemCount: playlists.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
           itemBuilder: (context, index) {
@@ -36,14 +36,14 @@ class AlbumGrid extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(24),
 
-                        child: AlbumView(album: albums[index])
+                        child: PlaylistView(playlist: playlists[index])
                       );
                     }
                   )
                 );
               },
 
-              child: AlbumThumbnail(album: albums[index])
+              child: PlaylistThumbnail(playlist: playlists[index])
             );
           },
         );
@@ -52,12 +52,12 @@ class AlbumGrid extends StatelessWidget {
   }
 }
 
-class AlbumThumbnail extends StatelessWidget {
-  final Album album;
+class PlaylistThumbnail extends StatelessWidget {
+  final Playlist playlist;
 
-  const AlbumThumbnail({
+  const PlaylistThumbnail({
     super.key,
-    required this.album
+    required this.playlist
   });
 
   @override
@@ -66,32 +66,27 @@ class AlbumThumbnail extends StatelessWidget {
       children: [
         CoverArt(
           height: 96,
-          image: Music.getAlbumCover(album).toString(),
+          image: Music.getPlaylistCover(playlist).toString(),
         ),
         
         const SizedBox(height: 6),
 
         Text(
-          album.name ?? "",
+          playlist.name ?? "",
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 16)
         ),
-
-        Text(
-          album.artist ?? "",
-          overflow: TextOverflow.ellipsis,
-        )
       ],
     );
   }
 }
 
-class AlbumView extends StatelessWidget {
-	final Album album;
+class PlaylistView extends StatelessWidget {
+	final Playlist playlist;
 	
-  const AlbumView({
+  const PlaylistView({
     super.key,
-		required this.album,
+		required this.playlist,
   });
 
   @override
@@ -102,7 +97,7 @@ class AlbumView extends StatelessWidget {
       children: [
         CoverArt(
           height: 144,
-          image: Music.getAlbumCover(album).toString()
+          image: Music.getPlaylistCover(playlist).toString()
         ),
 
         const SizedBox(height: 12,),
@@ -110,15 +105,9 @@ class AlbumView extends StatelessWidget {
         Column(
           children: [
             Text(
-              album.name ?? "", 
+              playlist.name ?? "", 
               style: const TextStyle(fontSize: 18),
               maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
-
-            Text(
-              album.artist ?? "",
-              maxLines: 1,
               textAlign: TextAlign.center,
             ),
           ]
@@ -132,7 +121,7 @@ class AlbumView extends StatelessWidget {
           children: [
             FilledButton(
               onPressed: () async {
-                await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
+                await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
                 await PlayerModel.player.setShuffleModeEnabled(false);
                 await PlayerModel.player.play();
               },
@@ -141,7 +130,7 @@ class AlbumView extends StatelessWidget {
             
             FilledButton(
               onPressed: () async {
-                await PlayerModel.instance.setPlaylist(album.songs!);
+                await PlayerModel.instance.setPlaylist(playlist.songs!);
                 await PlayerModel.player.setShuffleModeEnabled(true);
                 await PlayerModel.player.play();
               },
@@ -153,16 +142,16 @@ class AlbumView extends StatelessWidget {
         Expanded(
           child: ListView.separated(
             padding: const EdgeInsets.all(24),
-            itemCount: album.songs!.length,
+            itemCount: playlist.songs!.length,
 
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () async {
-                  await PlayerModel.instance.setPlaylist(album.songs!, index: index);
+                  await PlayerModel.instance.setPlaylist(playlist.songs!, index: index);
                   await PlayerModel.player.play();
                 },
 
-                child: TrackThumbnail(song: album.songs![index], index: index + 1)
+                child: TrackThumbnail(song: playlist.songs![index], index: index + 1)
               );
             },
 

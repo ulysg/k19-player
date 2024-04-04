@@ -5,10 +5,12 @@ import "package:flutter/widgets.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/album.dart";
+import "package:k19_player/domain/entities/playlist.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/album_view.dart";
+import "package:k19_player/widgets/playlist_view.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
@@ -32,6 +34,9 @@ Future<void> main() async {
 
   List<Album> albums = await Music.instance.getAlbums();
   ContentModel.instance.albums = albums;
+
+  List<Playlist> playlists = await Music.instance.getPlaylists();
+  ContentModel.instance.playlists = playlists;
 
   runApp(
     MultiProvider(
@@ -117,7 +122,7 @@ class MainViewState extends State<MainView> {
         SmallPlayerView(
           key: UniqueKey(),
           title: "Playlists",
-          child: const Text("Playlist"),
+          child: const PlaylistGrid(),
         ),
 
         SmallPlayerView(
