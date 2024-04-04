@@ -43,4 +43,4 @@ app.*.map.json
 /android/app/release
 
 # API password
-.lib/data/constants.dart
+constants.dart
