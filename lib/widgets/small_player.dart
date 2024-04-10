@@ -83,7 +83,9 @@ class SmallPlayerView extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
 
       onPanEnd: (details) {
-        if (details.velocity.pixelsPerSecond.dy < -5) {
+        Offset offset = details.velocity.pixelsPerSecond;
+
+        if (offset.dy < -5 && offset.dy.abs() > offset.dx.abs()) {
           Scaffold.of(context).showBottomSheet((builder) {
             return const Player();
           });

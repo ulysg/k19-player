@@ -27,6 +27,8 @@ class AlbumGrid extends StatelessWidget {
 
           itemBuilder: (context, index) {
             return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+
               onTap: () async {
                 Navigator.push(
                   context,
