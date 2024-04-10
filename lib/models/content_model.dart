@@ -14,8 +14,11 @@ class ContentModel extends ChangeNotifier {
 
   ContentModel._();
 
-  getSongs() async {
+  getContent() async {
     songs = await Music.instance.getRandomSongs();
+    albums =  await Music.instance.getAlbums();
+    playlists = await Music.instance.getPlaylists();
+
     notifyListeners();
   }
 }

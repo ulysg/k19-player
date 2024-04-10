@@ -102,81 +102,87 @@ class AlbumView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+     return ListView.separated(
+      itemCount: album.songs!.length + 1,
 
-      children: [
-        CoverArt(
-          height: 144,
-          image: Music.getAlbumCover(album).toString()
-        ),
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-        const SizedBox(height: 12,),
+            children: [
+              CoverArt(
+                height: 144,
+                image: Music.getAlbumCover(album).toString()
+              ),
+
+              const SizedBox(height: 12,),
+  
+              Column(
+                children: [
+                  Text(
+                    album.name ?? "", 
+                    style: const TextStyle(fontSize: 18),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  Text(
+                    album.artist ?? "",
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                  ),
+                ]
+              ),
+
+              const SizedBox(height: 12),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                children: [
+                  FilledButton(
+                    onPressed: () async {
+                      await PlayerModel.player.setShuffleModeEnabled(false);
+                      await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
+                      await PlayerModel.player.play();
+                    },
+                    child: const Icon(Icons.play_arrow),
+                  ),
+      
+                  FilledButton(
+                    onPressed: () async {
+                      await PlayerModel.player.setShuffleModeEnabled(true);
+                      await PlayerModel.instance.setPlaylist(album.songs!);
+                      await PlayerModel.player.play();
+                    },
+                    child: const Icon(Icons.shuffle),
+                  ),
+                ]
+              ),
+
+              const SizedBox(height: 12),
+            ]
+          );
+        }
         
-        Column(
-          children: [
-            Text(
-              album.name ?? "", 
-              style: const TextStyle(fontSize: 18),
-              maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
+        return InkWell(
+          onTap: () async {
+            await PlayerModel.instance.setPlaylist(album.songs!, index: index - 1);
+            await PlayerModel.player.play();
+          },
 
-            Text(
-              album.artist ?? "",
-              maxLines: 1,
-              textAlign: TextAlign.center,
-            ),
-          ]
-        ),
+          child: TrackThumbnail(song: album.songs![index - 1], index: index)
+        );
+      },
 
-        const SizedBox(height: 12),
+      separatorBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          return const SizedBox(height: 12);
+        }
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-          children: [
-            FilledButton(
-              onPressed: () async {
-                await PlayerModel.player.setShuffleModeEnabled(false);
-                await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
-                await PlayerModel.player.play();
-              },
-              child: const Icon(Icons.play_arrow),
-            ),
-            
-            FilledButton(
-              onPressed: () async {
-                await PlayerModel.player.setShuffleModeEnabled(true);
-                await PlayerModel.instance.setPlaylist(album.songs!);
-                await PlayerModel.player.play();
-              },
-              child: const Icon(Icons.shuffle),
-            ),
-          ]
-        ),
-
-        const SizedBox(height: 12),
-
-        Expanded(
-          child: ListView.separated(
-            itemCount: album.songs!.length,
-
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () async {
-                  await PlayerModel.instance.setPlaylist(album.songs!, index: index);
-                  await PlayerModel.player.play();
-                },
-
-                child: TrackThumbnail(song: album.songs![index], index: index + 1)
-              );
-            },
-
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-          )
-        )
-      ],
+        return const Divider();
+      },     
     );
   }
 }

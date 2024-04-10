@@ -109,75 +109,81 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return ListView.separated(
+      itemCount: playlist.songs!.length + 1,
 
-      children: [
-        CoverArt(
-          height: 120,
-          image: Music.getPlaylistCover(playlist).toString()
-        ),
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-        const SizedBox(height: 12,),
-        
-        Column(
-          children: [
-            Text(
-              playlist.name ?? "", 
-              style: const TextStyle(fontSize: 18),
-              maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
-          ]
-        ),
+            children: [
+              CoverArt(
+                height: 144,
+                image: Music.getPlaylistCover(playlist).toString()
+              ),
 
-        const SizedBox(height: 12),
+              const SizedBox(height: 12,),
+  
+              Column(
+                children: [
+                  Text(
+                    playlist.name ?? "", 
+                    style: const TextStyle(fontSize: 18),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ]
+              ),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              const SizedBox(height: 12),
 
-          children: [
-            FilledButton(
-              onPressed: () async {
-                await PlayerModel.player.setShuffleModeEnabled(false);
-                await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
-                await PlayerModel.player.play();
-              },
-              child: const Icon(Icons.play_arrow),
-            ),
-            
-            FilledButton(
-              onPressed: () async {
-                await PlayerModel.player.setShuffleModeEnabled(true);
-                await PlayerModel.instance.setPlaylist(playlist.songs!);
-                await PlayerModel.player.play();
-              },
-              child: const Icon(Icons.shuffle),
-            ),
-          ]
-        ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-        const SizedBox(height: 12),
+                children: [
+                  FilledButton(
+                    onPressed: () async {
+                      await PlayerModel.player.setShuffleModeEnabled(false);
+                      await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
+                      await PlayerModel.player.play();
+                    },
+                    child: const Icon(Icons.play_arrow),
+                  ),
+      
+                  FilledButton(
+                    onPressed: () async {
+                      await PlayerModel.player.setShuffleModeEnabled(true);
+                      await PlayerModel.instance.setPlaylist(playlist.songs!);
+                      await PlayerModel.player.play();
+                    },
+                    child: const Icon(Icons.shuffle),
+                  ),
+                ]
+              ),
 
-        Expanded(
-          child: ListView.separated(
-            itemCount: playlist.songs!.length,
+              const SizedBox(height: 12),
+            ]
+          );
+        }
 
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () async {
-                  await PlayerModel.instance.setPlaylist(playlist.songs!, index: index);
-                  await PlayerModel.player.play();
-                },
+        return InkWell(
+          onTap: () async {
+            await PlayerModel.instance.setPlaylist(playlist.songs!, index: index - 1);
+            await PlayerModel.player.play();
+          },
 
-                child: TrackThumbnail(song: playlist.songs![index], index: index + 1)
-              );
-            },
+          child: TrackThumbnail(song: playlist.songs![index - 1], index: index)
+        );
+      },
 
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-          )
-        )
-      ],
+      separatorBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          return const SizedBox(height: 12);
+        }
+
+        return const Divider();
+      },   
     );
   }
 }

@@ -27,16 +27,7 @@ Future<void> main() async {
     statusBarColor: Colors.transparent,
   ));
 
-  await Music.instance.refreshCache();
-
-  List<Song> songs = await Music.instance.getRandomSongs();
-  ContentModel.instance.songs = songs;
-
-  List<Album> albums = await Music.instance.getAlbums();
-  ContentModel.instance.albums = albums;
-
-  List<Playlist> playlists = await Music.instance.getPlaylists();
-  ContentModel.instance.playlists = playlists;
+  ContentModel.instance.getContent();
 
   runApp(
     MultiProvider(
