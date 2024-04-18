@@ -27,7 +27,7 @@ Future<void> main() async {
     statusBarColor: Colors.transparent,
   ));
 
-  ContentModel.instance.getContent();
+  await ContentModel.instance.getContent();
 
   runApp(
     MultiProvider(

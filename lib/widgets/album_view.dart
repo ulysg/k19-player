@@ -1,4 +1,6 @@
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/data/repositories/subsonic_repository.dart";
 import "package:k19_player/domain/entities/album.dart";
@@ -20,40 +22,59 @@ class AlbumGrid extends StatelessWidget {
       selector: (_, contentModel) => contentModel.albums,
 
       builder: (context, albums, child) {
-        return GridView.builder(
-          padding: const EdgeInsets.all(24),
-          itemCount: albums.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
 
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
+          children: [
+            const SizedBox(height: 12),
 
-              onTap: () async {
-                Navigator.push(
-                  context,
+            const Row(
+              children: [
+                SizedBox(width: 24),
+                  SortDropDown(),
+                ]
+            ),
+
+            const SizedBox(height: 12),
+            
+            Flexible(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(24),
+                itemCount: albums.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
+
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+
+                    onTap: () async {
+                      Navigator.push(
+                        context,
                 
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Scaffold(
-                        appBar: AppBar(
-                          title: Text(albums[index].name ?? "")
-                        ),
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return Scaffold(
+                              appBar: AppBar(
+                                title: Text(albums[index].name ?? "")
+                              ),
 
-                        body: Padding(
-                          padding: const EdgeInsets.all(24),
+                              body: Padding(
+                                padding: const EdgeInsets.all(24),
 
-                          child: AlbumView(album: albums[index])
+                                child: AlbumView(album: albums[index])
+                              )
+                            );
+                          }
                         )
                       );
-                    }
-                  )
-                );
-              },
+                    },
 
-              child: AlbumThumbnail(album: albums[index])
-            );
-          },
+                    child: AlbumThumbnail(album: albums[index])
+                  );
+                },
+              )
+            )
+          ]
         );
       }
     );
@@ -228,6 +249,34 @@ class TrackThumbnail extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class SortDropDown extends StatelessWidget {
+  const SortDropDown({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownMenu<SortOrder>(
+      initialSelection: SortOrder.nameAsc,
+
+      inputDecorationTheme: const InputDecorationTheme(
+        filled: true,
+      ),
+
+      onSelected: (sortOrder) {
+        print(sortOrder.toString);
+      },
+
+      dropdownMenuEntries: SortOrder.values.map((value) {
+        return DropdownMenuEntry(
+          value: value,
+          label: value.name,
+        );
+      }).toList(),
     );
   }
 }

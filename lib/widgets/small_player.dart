@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:k19_player/models/player_model.dart";
+import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/player.dart";
 import "package:k19_player/widgets/playing_image.dart";
 import "package:provider/provider.dart";
@@ -103,7 +104,7 @@ class SmallPlayerView extends StatelessWidget {
               builder: (context) {
                 return Scaffold(
                   appBar: AppBar(
-                    title: Text(title)
+                    title: Text(title),
                   ),
 
                   body: child,
