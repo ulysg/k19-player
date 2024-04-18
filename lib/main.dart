@@ -27,7 +27,7 @@ Future<void> main() async {
     statusBarColor: Colors.transparent,
   ));
 
-  await ContentModel.instance.getContent();
+  ContentModel.instance.getContent();
 
   runApp(
     MultiProvider(
@@ -107,6 +107,7 @@ class MainViewState extends State<MainView> {
         SmallPlayerView(
           key: UniqueKey(),
           title: "Albums",
+          action: const AlbumDropdown(),
           child: const AlbumGrid(),
         ),
         

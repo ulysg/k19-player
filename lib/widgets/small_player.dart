@@ -12,69 +12,71 @@ class SmallPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return BottomAppBar(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+    return BottomAppBar(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
 
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-            children: [
-              const PlayingImage(
-                height: 48,
+          children: [
+            const PlayingImage(
+              height: 48,
+            ),
+
+            const SizedBox(width: 12),
+
+            Flexible(
+              child: Column (
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                children: [
+                  Selector<PlayerModel, String?>(
+                    selector: (_, playerModel) => playerModel.mediaItem?.title,
+
+                    builder: (context, title, child) {
+                      return Text(
+                        title ?? "",
+                        style: const TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis
+                      );
+                    }
+                  ),
+                    
+                  Selector<PlayerModel, String?>(
+                    selector: (_, playerModel) => playerModel.mediaItem?.artist,
+
+                    builder: (context, artist, child) {
+                      return Text(
+                        artist ?? "",
+                        overflow: TextOverflow.ellipsis
+                      );
+                    },
+                  )
+                ]
               ),
+            ),
 
-              const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-              Flexible(
-                child: Column (
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                  children: [
-                    Selector<PlayerModel, String?>(
-                      selector: (_, playerModel) => playerModel.mediaItem?.title,
-
-                      builder: (context, title, child) {
-                        return Text(
-                          title ?? "",
-                          style: const TextStyle(fontSize: 16),
-                          overflow: TextOverflow.ellipsis
-                        );
-                      }
-                    ),
-                      
-                    Selector<PlayerModel, String?>(
-                      selector: (_, playerModel) => playerModel.mediaItem?.artist,
-
-                      builder: (context, artist, child) {
-                        return Text(
-                          artist ?? "",
-                          overflow: TextOverflow.ellipsis
-                        );
-                      },
-                    )
-                  ]
-                ),
-              ),
-
-              const SizedBox(width: 12),
-
-              const PlayingButton()
-            ]
-          ),
-        )
-      );
+            const PlayingButton()
+          ]
+        ),
+      )
+    );
   }
 }
 
 class SmallPlayerView extends StatelessWidget {
   final Widget child;
+  final Widget? action;
   final String title;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   SmallPlayerView({
     required this.child,
     required this.title,
+    this.action,
     super.key,
   });
 
@@ -102,9 +104,17 @@ class SmallPlayerView extends StatelessWidget {
             
             onGenerateRoute: (_) => MaterialPageRoute(
               builder: (context) {
+                List<Widget> actions = [];
+
+                if (action != null) {
+                  actions.add(action!);
+                }
+
                 return Scaffold(
                   appBar: AppBar(
                     title: Text(title),
+
+                    actions: actions,
                   ),
 
                   body: child,

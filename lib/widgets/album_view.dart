@@ -18,63 +18,42 @@ class AlbumGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ContentModel, List<Album>>(
-      selector: (_, contentModel) => contentModel.albums,
+    return Consumer<ContentModel>(
+      builder: (context, contentModel, child) {
+        return GridView.builder(
+          padding: const EdgeInsets.all(24),
+          itemCount: contentModel.albums.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
-      builder: (context, albums, child) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
 
-          children: [
-            const SizedBox(height: 12),
+              onTap: () async {
+                Navigator.push(
+                  context,
+          
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Scaffold(
+                        appBar: AppBar(
+                          title: Text(contentModel.albums[index].name ?? "")
+                        ),
 
-            const Row(
-              children: [
-                SizedBox(width: 24),
-                  SortDropDown(),
-                ]
-            ),
+                        body: Padding(
+                          padding: const EdgeInsets.all(24),
 
-            const SizedBox(height: 12),
-            
-            Flexible(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(24),
-                itemCount: albums.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
-
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-
-                    onTap: () async {
-                      Navigator.push(
-                        context,
-                
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Scaffold(
-                              appBar: AppBar(
-                                title: Text(albums[index].name ?? "")
-                              ),
-
-                              body: Padding(
-                                padding: const EdgeInsets.all(24),
-
-                                child: AlbumView(album: albums[index])
-                              )
-                            );
-                          }
+                          child: AlbumView(album: contentModel.albums[index])
                         )
                       );
-                    },
+                    }
+                  )
+                );
+              },
 
-                    child: AlbumThumbnail(album: albums[index])
-                  );
-                },
-              )
-            )
-          ]
+              child: AlbumThumbnail(album: contentModel.albums[index])
+            );
+          },
         );
       }
     );
@@ -253,30 +232,36 @@ class TrackThumbnail extends StatelessWidget {
   }
 }
 
-class SortDropDown extends StatelessWidget {
-  const SortDropDown({
+class AlbumDropdown extends StatelessWidget {
+  const AlbumDropdown({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<SortOrder>(
-      initialSelection: SortOrder.nameAsc,
+    return Selector<ContentModel, SortOrder>(
+      selector: (_, contentModel) => contentModel.albumsOrder,
 
-      inputDecorationTheme: const InputDecorationTheme(
-        filled: true,
-      ),
+      builder: (context, albumsOrder, child) {
+        return DropdownMenu<SortOrder>(
+          initialSelection: albumsOrder,
 
-      onSelected: (sortOrder) {
-        print(sortOrder.toString);
-      },
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none
+          ),
 
-      dropdownMenuEntries: SortOrder.values.map((value) {
-        return DropdownMenuEntry(
-          value: value,
-          label: value.name,
+          onSelected: (sortOrder) {
+            ContentModel.instance.changeAlbumsOrder(sortOrder!);
+          },
+
+          dropdownMenuEntries: SortOrder.values.map((value) {
+            return DropdownMenuEntry(
+              value: value,
+              label: value.label,
+            );
+          }).toList(),
         );
-      }).toList(),
+      }
     );
   }
 }
