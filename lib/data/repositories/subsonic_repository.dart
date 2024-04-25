@@ -65,10 +65,13 @@ class SubsonicRepository {
     final r = await _httpHelper.get("getArtists");
     if (r.containsKey("artists") && r["artists"].containsKey("index")) {
       final List<dynamic> indexList = r["artists"]["index"];
-      return indexList
+      List<Artist> artists = indexList
           .expand((v) => v["artist"])
           .map((v) => Artist.fromJson(v))
           .toList();
+      return await Future.wait(artists.map((v) async {
+        return await getArtist(v.id!);
+      }));
     }
     throw Exception("Error during parsing");
   }
@@ -79,8 +82,14 @@ class SubsonicRepository {
   }
 
   Future<List<Song>> getAllSongs() async {
-    final r = await _httpHelper.get("getMusicDirectory", {"id": "music"});
-    return _parseResponse<Song>(Song.fromJson, r, ["directory", "child"]);
+    final List<Artist> artists = await getArtists();
+    final List<Album> albums =
+        artists.expand((artist) => artist.album).toList();
+    final List<Album> fullAlbums = await Future.wait(albums.map((v) async {
+      return await getAlbum(v.id);
+    }).toList());
+    final List<Song> songs = fullAlbums.expand((album) => album.song).toList();
+    return songs;
   }
 
   Future<Artist> getArtist(String id) async {
@@ -96,6 +105,15 @@ class SubsonicRepository {
   Future<Song> getSong(String id) async {
     final r = await _httpHelper.get("getSong", {"id": id});
     return Song.fromJson(r["song"]);
+  }
+
+  Future<bool> ping() async {
+    try {
+      await _httpHelper.get("ping");
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<String> getStream(Song song) async {

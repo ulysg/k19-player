@@ -257,6 +257,42 @@ class MockSubsonicRepository extends _i1.Mock
 /// See the documentation for Mockito's code generation for more information.
 class MockDbRepository extends _i1.Mock implements _i9.DbRepository {
   @override
+  set albums(List<_i4.Album>? _albums) => super.noSuchMethod(
+        Invocation.setter(
+          #albums,
+          _albums,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set playlists(List<_i2.Playlist>? _playlists) => super.noSuchMethod(
+        Invocation.setter(
+          #playlists,
+          _playlists,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set songs(List<_i5.Song>? _songs) => super.noSuchMethod(
+        Invocation.setter(
+          #songs,
+          _songs,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set artists(List<_i3.Artist>? _artists) => super.noSuchMethod(
+        Invocation.setter(
+          #artists,
+          _artists,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i7.Future<dynamic> setLastUpdate(DateTime? dt) => (super.noSuchMethod(
         Invocation.method(
           #setLastUpdate,
@@ -341,7 +377,7 @@ class MockDbRepository extends _i1.Mock implements _i9.DbRepository {
       ) as _i7.Future<dynamic>);
 
   @override
-  _i7.Future<List<_i5.Song>> getSongs({int? size = 10}) => (super.noSuchMethod(
+  _i7.Future<List<_i5.Song>> getSongs({int? size = -1}) => (super.noSuchMethod(
         Invocation.method(
           #getSongs,
           [],
@@ -353,10 +389,12 @@ class MockDbRepository extends _i1.Mock implements _i9.DbRepository {
       ) as _i7.Future<List<_i5.Song>>);
 
   @override
-  _i7.Future<List<_i4.Album>> getAlbums() => (super.noSuchMethod(
+  _i7.Future<List<_i4.Album>> getAlbums({int? size = -1}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getAlbums,
           [],
+          {#size: size},
         ),
         returnValue: _i7.Future<List<_i4.Album>>.value(<_i4.Album>[]),
         returnValueForMissingStub:
@@ -364,10 +402,12 @@ class MockDbRepository extends _i1.Mock implements _i9.DbRepository {
       ) as _i7.Future<List<_i4.Album>>);
 
   @override
-  _i7.Future<List<_i2.Playlist>> getPlaylists() => (super.noSuchMethod(
+  _i7.Future<List<_i2.Playlist>> getPlaylists({int? size = -1}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getPlaylists,
           [],
+          {#size: size},
         ),
         returnValue: _i7.Future<List<_i2.Playlist>>.value(<_i2.Playlist>[]),
         returnValueForMissingStub:
@@ -375,10 +415,12 @@ class MockDbRepository extends _i1.Mock implements _i9.DbRepository {
       ) as _i7.Future<List<_i2.Playlist>>);
 
   @override
-  _i7.Future<List<_i3.Artist>> getArtists() => (super.noSuchMethod(
+  _i7.Future<List<_i3.Artist>> getArtists({int? size = -1}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getArtists,
           [],
+          {#size: size},
         ),
         returnValue: _i7.Future<List<_i3.Artist>>.value(<_i3.Artist>[]),
         returnValueForMissingStub:

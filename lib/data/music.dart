@@ -29,7 +29,7 @@ class Music {
     if (await checkCacheAvailable("songs")) {
       return dbRepository.getSongs();
     }
-    return await subsonicRepository.getRandomSongs();
+    return await subsonicRepository.getAllSongs();
   }
 
   Future<List<Playlist>> getPlaylists() async {
@@ -74,16 +74,24 @@ class Music {
     return subsonicRepository.getAlbum(id);
   }
 
+  Future<bool> ping() async {
+    return subsonicRepository.ping();
+  }
+
+  Future clear() async {
+    await dbRepository.clear();
+  }
+
   Future refreshCache() async {
     List<Artist> artists = await subsonicRepository.getArtists();
     List<Album> albums = await subsonicRepository.getAlbums();
     List<Playlist> playlists = await subsonicRepository.getPlaylists();
-    // List<Song> songs = await subsonicRepository.getAllSongs();
+    List<Song> songs = await subsonicRepository.getAllSongs();
 
     await dbRepository.setArtists(artists);
     await dbRepository.setAlbums(albums);
     await dbRepository.setPlaylist(playlists);
-    // await dbRepository.setSongs(songs);
+    await dbRepository.setSongs(songs);
     await dbRepository.setLastUpdate(DateTime.now());
   }
 
@@ -96,10 +104,12 @@ class Music {
   }
 
   static Uri getAlbumCover(Album album) {
-    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
+    return Uri.parse(
+        HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
   }
 
   static Uri getPlaylistCover(Playlist playlist) {
-    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt}));
+    return Uri.parse(
+        HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt}));
   }
 }

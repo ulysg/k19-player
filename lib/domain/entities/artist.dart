@@ -6,7 +6,7 @@ class Artist {
   final String? coverArt;
   final int? albumCount;
   final String? starred;
-  final List<Album>? albums;
+  final List<Album> album;
 
   Artist(
       {required this.name,
@@ -14,31 +14,18 @@ class Artist {
       this.coverArt,
       this.albumCount,
       this.starred,
-      required this.albums});
+      required this.album});
 
   factory Artist.fromJson(Map<String, dynamic> json) {
-    try {
-      if (!json.containsKey("artist")) {
-        return Artist(
-            name: json["name"],
-            id: json["id"],
-            coverArt: json["coverArt"],
-            albumCount: json["albumCount"],
-            starred: json["starred"],
-            albums: []);
-      }
-      return Artist(
-          name: json["name"],
-          id: json["id"],
-          coverArt: json["coverArt"],
-          albumCount: json["albumCount"],
-          starred: json["starred"],
-          albums: json.containsKey("artist")
-              ? List<Album>.from(json["artist"].map((v) => Album.fromJson(v)))
-              : null);
-    } catch (_) {
-      throw const FormatException("Failed to load artist");
-    }
+    return Artist(
+        name: json["name"],
+        id: json["id"],
+        coverArt: json["coverArt"],
+        albumCount: json["albumCount"],
+        starred: json["starred"],
+        album: json.containsKey("album")
+            ? List<Album>.from(json["album"].map((v) => Album.fromJson(v)))
+            : []);
   }
 
   Map<String, dynamic> toJson() {
@@ -48,7 +35,7 @@ class Artist {
       'coverArt': coverArt,
       'albumCount': albumCount,
       'starred': starred,
-      'albums': albums?.map((album) => album.toJson()).toList(),
+      'album': album.map((album) => album.toJson()).toList(),
     };
   }
 }

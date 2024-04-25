@@ -7,7 +7,6 @@ import 'dart:async' as _i3;
 
 import 'package:k19_player/data/helpers/http_helper.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -44,26 +43,4 @@ class MockHttpHelper extends _i1.Mock implements _i2.HttpHelper {
         returnValueForMissingStub:
             _i3.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i3.Future<Map<String, dynamic>>);
-
-  @override
-  String test() => (super.noSuchMethod(
-        Invocation.method(
-          #test,
-          [],
-        ),
-        returnValue: _i4.dummyValue<String>(
-          this,
-          Invocation.method(
-            #test,
-            [],
-          ),
-        ),
-        returnValueForMissingStub: _i4.dummyValue<String>(
-          this,
-          Invocation.method(
-            #test,
-            [],
-          ),
-        ),
-      ) as String);
 }
