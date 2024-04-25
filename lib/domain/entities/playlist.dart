@@ -9,6 +9,7 @@ class Playlist {
   final String? changed;
   final int? songCount;
   final int? duration;
+  final String? coverArt;
   final List<Song>? songs;
 
   Playlist({
@@ -20,6 +21,7 @@ class Playlist {
     this.changed,
     this.songCount,
     this.duration,
+    this.coverArt,
     this.songs,
   });
 
@@ -33,6 +35,7 @@ class Playlist {
       changed: json['changed'],
       songCount: json['songCount'],
       duration: json['duration'],
+      coverArt: json['coverArt'],
       songs: json.containsKey("entry")
           ? List<Song>.from(json["entry"].map((v) => Song.fromJson(v)))
           : null,
@@ -49,6 +52,7 @@ class Playlist {
       'changed': changed,
       'songCount': songCount,
       'duration': duration,
+      'coverArt': coverArt,
       'songs': songs?.map((song) => song.toJson()).toList(),
     };
   }

@@ -87,6 +87,10 @@ class Music {
     await dbRepository.setLastUpdate(DateTime.now());
   }
 
+  savePref(String username, String password, String hostname) {
+    print("Saved pref $username, $password, $hostname");
+  }
+
   static Uri getSongUri(Song song) {
     return Uri.parse(HttpHelper.getStream(song.id));
   }
@@ -96,7 +100,10 @@ class Music {
   }
 
   static Uri getAlbumCover(Album album) {
-    return Uri.parse(
-        HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
+    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
+  }
+
+  static Uri getPlaylistCover(Playlist playlist) {
+    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt}));
   }
 }

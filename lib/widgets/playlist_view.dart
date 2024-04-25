@@ -1,9 +1,7 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/data/repositories/subsonic_repository.dart";
-import "package:k19_player/domain/entities/album.dart";
+import "package:k19_player/domain/entities/playlist.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
@@ -11,8 +9,8 @@ import "package:k19_player/widgets/playing_image.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
 
-class AlbumGrid extends StatelessWidget {
-  const AlbumGrid({
+class PlaylistList extends StatelessWidget {
+  const PlaylistList({
     super.key,
   });
 
@@ -20,10 +18,9 @@ class AlbumGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ContentModel>(
       builder: (context, contentModel, child) {
-        return GridView.builder(
+        return ListView.separated(
           padding: const EdgeInsets.all(24),
-          itemCount: contentModel.albums.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
+          itemCount: contentModel.playlists.length,
 
           itemBuilder: (context, index) {
             return GestureDetector(
@@ -32,18 +29,18 @@ class AlbumGrid extends StatelessWidget {
               onTap: () async {
                 Navigator.push(
                   context,
-          
+                
                   MaterialPageRoute(
                     builder: (context) {
                       return Scaffold(
                         appBar: AppBar(
-                          title: Text(contentModel.albums[index].name ?? "")
+                          title: Text(contentModel.playlists[index].name ?? "")
                         ),
 
                         body: Padding(
                           padding: const EdgeInsets.all(24),
 
-                          child: AlbumView(album: contentModel.albums[index])
+                          child: PlaylistView(playlist: contentModel.playlists[index])
                         )
                       );
                     }
@@ -51,61 +48,69 @@ class AlbumGrid extends StatelessWidget {
                 );
               },
 
-              child: AlbumThumbnail(album: contentModel.albums[index])
+              child: PlaylistThumbnail(playlist: contentModel.playlists[index])
             );
           },
+
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
         );
       }
     );
   }
 }
 
-class AlbumThumbnail extends StatelessWidget {
-  final Album album;
+class PlaylistThumbnail extends StatelessWidget {
+  final Playlist playlist;
 
-  const AlbumThumbnail({
+  const PlaylistThumbnail({
     super.key,
-    required this.album
+    required this.playlist
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
       children: [
-        CoverArt(
-          height: 96,
-          image: Music.getAlbumCover(album).toString(),
+        CoverArt(height: 48, image: Music.getPlaylistCover(playlist).toString()),
+
+        const SizedBox(width: 24),
+
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+
+          child: Text(
+            playlist.name ?? "",
+            style: const TextStyle(fontSize: 16),
+            overflow: TextOverflow.ellipsis,
+          )
         ),
-        
-        const SizedBox(height: 6),
+
+        const SizedBox(width: 12),
 
         Text(
-          album.name ?? "",
+          playlist.songCount.toString(), 
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16)
         ),
-
-        Text(
-          album.artist ?? "",
-          overflow: TextOverflow.ellipsis,
-        )
       ],
     );
   }
 }
 
-class AlbumView extends StatelessWidget {
-	final Album album;
+class PlaylistView extends StatelessWidget {
+	final Playlist playlist;
 	
-  const AlbumView({
+  const PlaylistView({
     super.key,
-		required this.album,
+		required this.playlist,
   });
 
   @override
   Widget build(BuildContext context) {
-     return ListView.separated(
-      itemCount: album.songs!.length + 1,
+    return ListView.separated(
+      itemCount: playlist.songs!.length + 1,
 
       itemBuilder: (context, index) {
         if (index == 0) {
@@ -115,7 +120,7 @@ class AlbumView extends StatelessWidget {
             children: [
               CoverArt(
                 height: 144,
-                image: Music.getAlbumCover(album).toString()
+                image: Music.getPlaylistCover(playlist).toString()
               ),
 
               const SizedBox(height: 12,),
@@ -123,15 +128,9 @@ class AlbumView extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    album.name ?? "", 
+                    playlist.name ?? "", 
                     style: const TextStyle(fontSize: 18),
                     maxLines: 2,
-                    textAlign: TextAlign.center,
-                  ),
-
-                  Text(
-                    album.artist ?? "",
-                    maxLines: 1,
                     textAlign: TextAlign.center,
                   ),
                 ]
@@ -146,7 +145,7 @@ class AlbumView extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       await PlayerModel.player.setShuffleModeEnabled(false);
-                      await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
+                      await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
                       await PlayerModel.player.play();
                     },
                     child: const Icon(Icons.play_arrow),
@@ -155,7 +154,7 @@ class AlbumView extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       await PlayerModel.player.setShuffleModeEnabled(true);
-                      await PlayerModel.instance.setPlaylist(album.songs!);
+                      await PlayerModel.instance.setPlaylist(playlist.songs!);
                       await PlayerModel.player.play();
                     },
                     child: const Icon(Icons.shuffle),
@@ -167,14 +166,14 @@ class AlbumView extends StatelessWidget {
             ]
           );
         }
-        
+
         return InkWell(
           onTap: () async {
-            await PlayerModel.instance.setPlaylist(album.songs!, index: index - 1);
+            await PlayerModel.instance.setPlaylist(playlist.songs!, index: index - 1);
             await PlayerModel.player.play();
           },
 
-          child: TrackThumbnail(song: album.songs![index - 1], index: index)
+          child: TrackThumbnail(song: playlist.songs![index - 1], index: index)
         );
       },
 
@@ -184,7 +183,7 @@ class AlbumView extends StatelessWidget {
         }
 
         return const Divider();
-      },     
+      },   
     );
   }
 }
@@ -205,11 +204,14 @@ class TrackThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
 
       children: [
-        Text(index.toString()),
+        CoverArt(height: 36, image: Music.getSongCover(song).toString()),
 
         const SizedBox(width: 24),
 
         Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -227,35 +229,39 @@ class TrackThumbnail extends StatelessWidget {
             ],
           ),
         ),
+
+        const SizedBox(width: 12),
+
+        Text(PlayerModel.secondsToString(song.duration ?? 0)),
       ],
     );
   }
 }
 
-class AlbumDropdown extends StatelessWidget {
-  const AlbumDropdown({
+class PlaylistDropdown extends StatelessWidget {
+  const PlaylistDropdown({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ContentModel, SortOrder>(
-      selector: (_, contentModel) => contentModel.albumsOrder,
+    return Selector<ContentModel, PlaylistSortOrder>(
+      selector: (_, contentModel) => contentModel.playlistsOrder,
 
-      builder: (context, albumsOrder, child) {
-        return DropdownMenu<SortOrder>(
+      builder: (context, playlistsOrder, child) {
+        return DropdownMenu<PlaylistSortOrder>(
           width: 120,
-          initialSelection: albumsOrder,
+          initialSelection: playlistsOrder,
 
           inputDecorationTheme: const InputDecorationTheme(
             border: InputBorder.none
           ),
 
           onSelected: (sortOrder) {
-            ContentModel.instance.changeAlbumsOrder(sortOrder!);
+            ContentModel.instance.changePlaylistsOrder(sortOrder!);
           },
 
-          dropdownMenuEntries: SortOrder.values.map((value) {
+          dropdownMenuEntries: PlaylistSortOrder.values.map((value) {
             return DropdownMenuEntry(
               value: value,
               label: value.label,

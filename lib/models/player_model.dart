@@ -63,7 +63,7 @@ class PlayerModel extends ChangeNotifier {
     await player.seek(Duration(seconds: seconds));
   }
 
-  setPlaylist(List<Song> playlist, {int index = 0}) async {
+  setPlaylist(List<Song> playlist, {int? index}) async {
     if (player.playerState.processingState == ProcessingState.loading) {
       _newPlaylist = playlist;
       _newIndex = index;
@@ -78,7 +78,12 @@ class PlayerModel extends ChangeNotifier {
       children: playlist.map(songToAudioSource).toList()
     );
 
-    await player.setAudioSource(source, initialIndex: index);
+    if (index != null) {
+      await player.setAudioSource(source, initialIndex: index);
+    } 
+    else {
+      await player.setAudioSource(source);      
+    }
 
     if (_newPlaylist != null && _newIndex != null) {
       setPlaylist(_newPlaylist!, index: _newIndex!);
