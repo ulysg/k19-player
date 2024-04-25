@@ -16,32 +16,46 @@ class PlaylistList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ContentModel, List<Playlist>>(
-        selector: (_, contentModel) => contentModel.playlists,
-        builder: (context, playlists, child) {
-          return ListView.separated(
-            padding: const EdgeInsets.all(24),
-            itemCount: playlists.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () async {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
+    return Consumer<ContentModel>(
+      builder: (context, contentModel, child) {
+        return ListView.separated(
+          padding: const EdgeInsets.all(24),
+          itemCount: contentModel.playlists.length,
+
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+
+              onTap: () async {
+                Navigator.push(
+                  context,
+                
+                  MaterialPageRoute(
+                    builder: (context) {
                       return Scaffold(
-                          appBar:
-                              AppBar(title: Text(playlists[index].name ?? "")),
-                          body: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: PlaylistView(playlist: playlists[index])));
-                    }));
-                  },
-                  child: PlaylistThumbnail(playlist: playlists[index]));
-            },
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
-          );
-        });
+                        appBar: AppBar(
+                          title: Text(contentModel.playlists[index].name ?? "")
+                        ),
+
+                        body: Padding(
+                          padding: const EdgeInsets.all(24),
+
+                          child: PlaylistView(playlist: contentModel.playlists[index])
+                        )
+                      );
+                    }
+                  )
+                );
+              },
+
+              child: PlaylistThumbnail(playlist: contentModel.playlists[index])
+            );
+          },
+
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
+        );
+      }
+    );
   }
 }
 
@@ -189,6 +203,41 @@ class TrackThumbnail extends StatelessWidget {
         const SizedBox(width: 12),
         Text(PlayerModel.secondsToString(song.duration ?? 0)),
       ],
+    );
+  }
+}
+
+class PlaylistDropdown extends StatelessWidget {
+  const PlaylistDropdown({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<ContentModel, PlaylistSortOrder>(
+      selector: (_, contentModel) => contentModel.playlistsOrder,
+
+      builder: (context, playlistsOrder, child) {
+        return DropdownMenu<PlaylistSortOrder>(
+          width: 120,
+          initialSelection: playlistsOrder,
+
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none
+          ),
+
+          onSelected: (sortOrder) {
+            ContentModel.instance.changePlaylistsOrder(sortOrder!);
+          },
+
+          dropdownMenuEntries: PlaylistSortOrder.values.map((value) {
+            return DropdownMenuEntry(
+              value: value,
+              label: value.label,
+            );
+          }).toList(),
+        );
+      }
     );
   }
 }

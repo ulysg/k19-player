@@ -194,22 +194,29 @@ class AlbumDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<ContentModel, SortOrder>(
-        selector: (_, contentModel) => contentModel.albumsOrder,
-        builder: (context, albumsOrder, child) {
-          return DropdownMenu<SortOrder>(
-            initialSelection: albumsOrder,
-            inputDecorationTheme:
-                const InputDecorationTheme(border: InputBorder.none),
-            onSelected: (sortOrder) {
-              ContentModel.instance.changeAlbumsOrder(sortOrder!);
-            },
-            dropdownMenuEntries: SortOrder.values.map((value) {
-              return DropdownMenuEntry(
-                value: value,
-                label: value.label,
-              );
-            }).toList(),
-          );
-        });
+      selector: (_, contentModel) => contentModel.albumsOrder,
+
+      builder: (context, albumsOrder, child) {
+        return DropdownMenu<SortOrder>(
+          width: 120,
+          initialSelection: albumsOrder,
+
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none
+          ),
+
+          onSelected: (sortOrder) {
+            ContentModel.instance.changeAlbumsOrder(sortOrder!);
+          },
+
+          dropdownMenuEntries: SortOrder.values.map((value) {
+            return DropdownMenuEntry(
+              value: value,
+              label: value.label,
+            );
+          }).toList(),
+        );
+      }
+    );
   }
 }

@@ -1,16 +1,12 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter/widgets.dart";
 import "package:just_audio_background/just_audio_background.dart";
-import "package:k19_player/data/music.dart";
-import "package:k19_player/domain/entities/album.dart";
-import "package:k19_player/domain/entities/playlist.dart";
-import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/playlist_view.dart";
+import "package:k19_player/widgets/settings.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
@@ -100,6 +96,11 @@ class MainViewState extends State<MainView> {
             icon: Icon(Icons.music_note),
             label: "Songs",
           ),
+
+          NavigationDestination(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
         ],
       ),
 
@@ -114,14 +115,18 @@ class MainViewState extends State<MainView> {
         SmallPlayerView(
           key: UniqueKey(),
           title: "Playlists",
+          action:  const PlaylistDropdown(),
           child: const PlaylistList(),
         ),
 
         SmallPlayerView(
           key: UniqueKey(),
           title: "Songs",
+          action: const SongDropdown(),
           child: const SongView(),
         ),
+
+        const SettingsView()
       ][currentPageIndex],
     );
   }
