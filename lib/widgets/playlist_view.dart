@@ -16,13 +16,11 @@ class PlaylistList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ContentModel, List<Playlist>>(
-      selector: (_, contentModel) => contentModel.playlists,
-
-      builder: (context, playlists, child) {
+    return Consumer<ContentModel>(
+      builder: (context, contentModel, child) {
         return ListView.separated(
           padding: const EdgeInsets.all(24),
-          itemCount: playlists.length,
+          itemCount: contentModel.playlists.length,
 
           itemBuilder: (context, index) {
             return GestureDetector(
@@ -36,13 +34,13 @@ class PlaylistList extends StatelessWidget {
                     builder: (context) {
                       return Scaffold(
                         appBar: AppBar(
-                          title: Text(playlists[index].name ?? "")
+                          title: Text(contentModel.playlists[index].name ?? "")
                         ),
 
                         body: Padding(
                           padding: const EdgeInsets.all(24),
 
-                          child: PlaylistView(playlist: playlists[index])
+                          child: PlaylistView(playlist: contentModel.playlists[index])
                         )
                       );
                     }
@@ -50,7 +48,7 @@ class PlaylistList extends StatelessWidget {
                 );
               },
 
-              child: PlaylistThumbnail(playlist: playlists[index])
+              child: PlaylistThumbnail(playlist: contentModel.playlists[index])
             );
           },
 
@@ -236,6 +234,41 @@ class TrackThumbnail extends StatelessWidget {
 
         Text(PlayerModel.secondsToString(song.duration ?? 0)),
       ],
+    );
+  }
+}
+
+class PlaylistDropdown extends StatelessWidget {
+  const PlaylistDropdown({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<ContentModel, PlaylistSortOrder>(
+      selector: (_, contentModel) => contentModel.playlistsOrder,
+
+      builder: (context, playlistsOrder, child) {
+        return DropdownMenu<PlaylistSortOrder>(
+          width: 120,
+          initialSelection: playlistsOrder,
+
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none
+          ),
+
+          onSelected: (sortOrder) {
+            ContentModel.instance.changePlaylistsOrder(sortOrder!);
+          },
+
+          dropdownMenuEntries: PlaylistSortOrder.values.map((value) {
+            return DropdownMenuEntry(
+              value: value,
+              label: value.label,
+            );
+          }).toList(),
+        );
+      }
     );
   }
 }

@@ -244,6 +244,7 @@ class AlbumDropdown extends StatelessWidget {
 
       builder: (context, albumsOrder, child) {
         return DropdownMenu<SortOrder>(
+          width: 120,
           initialSelection: albumsOrder,
 
           inputDecorationTheme: const InputDecorationTheme(

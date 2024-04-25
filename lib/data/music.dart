@@ -87,6 +87,10 @@ class Music {
     await dbRepository.setLastUpdate(DateTime.now());
   }
 
+  savePref(String username, String password, String hostname) {
+    print("Saved pref $username, $password, $hostname");
+  }
+
   static Uri getSongUri(Song song) {
     return Uri.parse(HttpHelper.getStream(song.id));
   }
