@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:k19_player/data/constants.dart';
 import 'package:crypto/crypto.dart';
+import 'package:k19_player/data/music.dart';
+import 'package:k19_player/domain/entities/connection.dart';
 
 class HttpHelper {
   Future<Map<String, dynamic>> get(String endpoint,
@@ -22,13 +23,18 @@ class HttpHelper {
   }
 
   static String buildUrl(String endpoint, [Map<String, dynamic>? pbody]) {
+    if (Music.instance.connection == null) {
+      throw Exception("Connection not established");
+    }
+    Connection connection = Music.instance.connection!;
+    String urlServer = connection.url;
     String url = "$urlServer/rest/$endpoint";
     Map<String, dynamic> body = {
-      'u': userSubsonic,
-      't': md5.convert(utf8.encode(passwordSubsonic + saltSubsonic)).toString(),
-      's': saltSubsonic,
-      "v": versionSubsonic,
-      "c": appnameSubsonic,
+      'u': connection.username,
+      't': connection.passwordHash,
+      's': connection.salt,
+      "v": connection.version,
+      "c": connection.appname,
       "f": "json"
     };
     body = pbody != null ? {...body, ...pbody} : body;

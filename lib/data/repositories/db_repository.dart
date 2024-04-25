@@ -1,6 +1,7 @@
 import 'package:k19_player/data/helpers/tools.dart';
 import 'package:k19_player/domain/entities/album.dart';
 import 'package:k19_player/domain/entities/artist.dart';
+import 'package:k19_player/domain/entities/connection.dart';
 import 'package:k19_player/domain/entities/playlist.dart';
 import 'package:k19_player/domain/entities/song.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +41,23 @@ class DbRepository {
   Future<bool> checkIfValueExist(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.containsKey(value);
+  }
+
+  Future addConnection(Connection connection) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final connections = await getConnections();
+    connections.add(connection);
+    await prefs.setStringList(
+        "connections", connections.map((v) => jsonEncode(v.toJson())).toList());
+  }
+
+  Future<List<Connection>> getConnections() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final connections = prefs.getStringList("connections");
+    if (connections == null) {
+      return [];
+    }
+    return connections.map((v) => Connection.fromJson(json.decode(v))).toList();
   }
 
   Future setArtists(List<Artist> artists) async {

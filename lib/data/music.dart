@@ -3,6 +3,7 @@ import 'package:k19_player/data/repositories/db_repository.dart';
 import 'package:k19_player/data/repositories/subsonic_repository.dart';
 import 'package:k19_player/domain/entities/album.dart';
 import 'package:k19_player/domain/entities/artist.dart';
+import 'package:k19_player/domain/entities/connection.dart';
 import 'package:k19_player/domain/entities/playlist.dart';
 import 'package:k19_player/domain/entities/song.dart';
 
@@ -10,8 +11,12 @@ class Music {
   static Music? _instance;
   DbRepository dbRepository = DbRepository.instance;
   SubsonicRepository subsonicRepository = SubsonicRepository();
+  Connection? connection;
 
-  Music._();
+  Music._() {
+    connection = Connection("https://demo.navidrome.org", "demo", "demo", "yes",
+        "1.15.1", "k19-player");
+  }
 
   static Music get instance => _instance ??= Music._();
 
@@ -23,6 +28,18 @@ class Music {
       return false;
     }
     return true;
+  }
+
+  Future<List<Connection>> getConnections() async {
+    return await dbRepository.getConnections();
+  }
+
+  Future addConnection(Connection connection) async {
+    await dbRepository.addConnection(connection);
+  }
+
+  setConnection(Connection connection) {
+    this.connection = connection;
   }
 
   Future<List<Song>> getRandomSongs() async {
