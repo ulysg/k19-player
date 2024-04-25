@@ -10,7 +10,7 @@ class Playlist {
   final int? songCount;
   final int? duration;
   final String? coverArt;
-  final List<Song>? songs;
+  final List<Song> song;
 
   Playlist({
     required this.id,
@@ -22,7 +22,7 @@ class Playlist {
     this.songCount,
     this.duration,
     this.coverArt,
-    this.songs,
+    required this.song,
   });
 
   factory Playlist.fromJson(Map<String, dynamic> json) {
@@ -36,9 +36,9 @@ class Playlist {
       songCount: json['songCount'],
       duration: json['duration'],
       coverArt: json['coverArt'],
-      songs: json.containsKey("entry")
+      song: json.containsKey("entry")
           ? List<Song>.from(json["entry"].map((v) => Song.fromJson(v)))
-          : null,
+          : [],
     );
   }
 
@@ -53,7 +53,7 @@ class Playlist {
       'songCount': songCount,
       'duration': duration,
       'coverArt': coverArt,
-      'songs': songs?.map((song) => song.toJson()).toList(),
+      'entry': song.map((song) => song.toJson()).toList(),
     };
   }
 }

@@ -15,7 +15,7 @@ class Album {
   final String? artist;
   final int? year;
   final String? genre;
-  final List<Song>? songs;
+  final List<Song> song;
 
   Album({
     required this.id,
@@ -32,7 +32,7 @@ class Album {
     this.artist,
     this.year,
     this.genre,
-    this.songs,
+    required this.song,
   });
 
   factory Album.fromJson(Map<String, dynamic> json) {
@@ -51,9 +51,9 @@ class Album {
       artist: json['artist'],
       year: json['year'],
       genre: json['genre'],
-      songs: json.containsKey("song")
+      song: json.containsKey("song")
           ? json["song"].map<Song>((v) => Song.fromJson(v)).toList()
-          : null,
+          : [],
     );
   }
 
@@ -73,7 +73,7 @@ class Album {
       'artist': artist,
       'year': year,
       'genre': genre,
-      'songs': songs?.map((song) => song.toJson()).toList(),
+      'song': song.map((song) => song.toJson()).toList(),
     };
   }
 }
