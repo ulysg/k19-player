@@ -17,6 +17,10 @@ class MediaStorage {
   static Future<Uri> getImage(String name) async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     File img = File("${documentsDirectory.path}/$name");
-    return img.uri;
+
+    if (await img.exists()) {
+      return img.uri;
+    }
+    throw Exception("Error during file retrieval");
   }
 }
