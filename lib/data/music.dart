@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'package:k19_player/data/helpers/http_helper.dart';
 import 'package:k19_player/data/helpers/tools.dart';
 import 'package:k19_player/data/repositories/db_repository.dart';
+import 'package:k19_player/data/repositories/media_storage.dart';
 import 'package:k19_player/data/repositories/subsonic_repository.dart';
 import 'package:k19_player/domain/entities/album.dart';
 import 'package:k19_player/domain/entities/artist.dart';
@@ -97,17 +98,37 @@ class Music {
     return Uri.parse(HttpHelper.getStream(song.id));
   }
 
-  Uri getSongCover(Song song) {
-    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": song.coverArt}));
+  Future<Uri> getSongCover(Song song) async {
+    try {
+      return await MediaStorage.getImage(song.id);
+    } catch (_) {
+      await MediaStorage.saveImage(
+          Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": song.coverArt})),
+          song.id);
+      return await MediaStorage.getImage(song.id);
+    }
   }
 
-  Uri getAlbumCover(Album album) {
-    return Uri.parse(
-        HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
+  Future<Uri> getAlbumCover(Album album) async {
+    try {
+      return await MediaStorage.getImage(album.id);
+    } catch (_) {
+      await MediaStorage.saveImage(
+          Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt})),
+          album.id);
+      return await MediaStorage.getImage(album.id);
+    }
   }
 
-  Uri getPlaylistCover(Playlist playlist) {
-    return Uri.parse(
-        HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt}));
+  Future<Uri> getPlaylistCover(Playlist playlist) async {
+    try {
+      return await MediaStorage.getImage(playlist.id);
+    } catch (_) {
+      await MediaStorage.saveImage(
+          Uri.parse(
+              HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt})),
+          playlist.id);
+      return await MediaStorage.getImage(playlist.id);
+    }
   }
 }
