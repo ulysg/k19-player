@@ -73,7 +73,10 @@ class PlaylistThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
       children: [
-        CoverArt(height: 48, image: Music.getPlaylistCover(playlist).toString()),
+        CoverArt(
+          height: 48,
+          image: Music.instance.getPlaylistCover(playlist)
+        ),
 
         const SizedBox(width: 24),
 
@@ -110,7 +113,7 @@ class PlaylistView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      itemCount: playlist.songs!.length + 1,
+      itemCount: playlist.song.length + 1,
 
       itemBuilder: (context, index) {
         if (index == 0) {
@@ -120,7 +123,7 @@ class PlaylistView extends StatelessWidget {
             children: [
               CoverArt(
                 height: 144,
-                image: Music.getPlaylistCover(playlist).toString()
+                image: Music.instance.getPlaylistCover(playlist)
               ),
 
               const SizedBox(height: 12,),
@@ -145,7 +148,7 @@ class PlaylistView extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       await PlayerModel.player.setShuffleModeEnabled(false);
-                      await PlayerModel.instance.setPlaylist(playlist.songs!, index: 0);
+                      await PlayerModel.instance.setPlaylist(playlist.song, index: 0);
                       await PlayerModel.player.play();
                     },
                     child: const Icon(Icons.play_arrow),
@@ -154,7 +157,7 @@ class PlaylistView extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       await PlayerModel.player.setShuffleModeEnabled(true);
-                      await PlayerModel.instance.setPlaylist(playlist.songs!);
+                      await PlayerModel.instance.setPlaylist(playlist.song);
                       await PlayerModel.player.play();
                     },
                     child: const Icon(Icons.shuffle),
@@ -169,11 +172,11 @@ class PlaylistView extends StatelessWidget {
 
         return InkWell(
           onTap: () async {
-            await PlayerModel.instance.setPlaylist(playlist.songs!, index: index - 1);
+            await PlayerModel.instance.setPlaylist(playlist.song, index: index - 1);
             await PlayerModel.player.play();
           },
 
-          child: TrackThumbnail(song: playlist.songs![index - 1], index: index)
+          child: TrackThumbnail(song: playlist.song[index - 1], index: index)
         );
       },
 
@@ -204,7 +207,10 @@ class TrackThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
 
       children: [
-        CoverArt(height: 36, image: Music.getSongCover(song).toString()),
+        CoverArt(
+          height: 36, 
+          image: Music.instance.getSongCover(song)
+        ),
 
         const SizedBox(width: 24),
 

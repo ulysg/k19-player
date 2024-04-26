@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:flutter/material.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:provider/provider.dart";
@@ -17,18 +19,24 @@ class CoverArt extends StatelessWidget {
         future: image,
 
         builder: (context, snapshot) {
+          Icon icon = Icon(
+            Icons.album,
+            size: height.toDouble(),
+            color: Theme.of(context).colorScheme.onSecondary,
+          );
+
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              return Image.network(
-                snapshot.data.toString()
+              if (snapshot.data == null) {
+                return icon;
+              }
+           
+              return Image.file(
+                File.fromUri(snapshot.data!)
               );
 
             default:
-              return Icon(
-                Icons.album,
-                size: height.toDouble(),
-                color: Theme.of(context).colorScheme.onSecondary,
-              );
+              return icon;
           }
         }
       )
@@ -47,7 +55,10 @@ class PlayingImage extends StatelessWidget {
       selector: (_, playerModel) => playerModel.mediaItem?.artUri,
 
       builder: (context, image, child) {
-        return CoverArt(height: height, image: Future(() => image));
+        return CoverArt(
+          height: height, 
+          image: Future(() => image)
+        );
       });
   }
 }

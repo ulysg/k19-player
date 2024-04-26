@@ -75,7 +75,7 @@ class PlayerModel extends ChangeNotifier {
 
     ConcatenatingAudioSource source = ConcatenatingAudioSource(
       useLazyPreparation: true,
-      children: playlist.map(songToAudioSource).toList()
+      children: await Stream.fromIterable(playlist).asyncMap(songToAudioSource).toList()
     );
 
     if (index != null) {
@@ -90,16 +90,16 @@ class PlayerModel extends ChangeNotifier {
     }
   }
 
-  AudioSource songToAudioSource(Song song) {
+  Future<AudioSource> songToAudioSource(Song song) async {
     return AudioSource.uri(
-      Music.getSongUri(song),
+      Music.instance.getSongUri(song),
 
       tag: MediaItem(
         id: song.id,
         title: song.title ?? "notitle",
         artist: song.artist ?? "noartist",
         album: song.album ?? "noalbum",
-        artUri: Music.getSongCover(song),
+        artUri: await Music.instance.getSongCover(song),
       )
     );
   }

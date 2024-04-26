@@ -1,14 +1,10 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:k19_player/data/music.dart";
-import "package:k19_player/data/repositories/subsonic_repository.dart";
 import "package:k19_player/domain/entities/album.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
-import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
 
 class AlbumGrid extends StatelessWidget {
@@ -74,7 +70,7 @@ class AlbumThumbnail extends StatelessWidget {
       children: [
         CoverArt(
           height: 96,
-          image: Music.getAlbumCover(album).toString(),
+          image: Music.instance.getAlbumCover(album)
         ),
         
         const SizedBox(height: 6),
@@ -105,7 +101,7 @@ class AlbumView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
      return ListView.separated(
-      itemCount: album.songs!.length + 1,
+      itemCount: album.song.length + 1,
 
       itemBuilder: (context, index) {
         if (index == 0) {
@@ -115,7 +111,7 @@ class AlbumView extends StatelessWidget {
             children: [
               CoverArt(
                 height: 144,
-                image: Music.getAlbumCover(album).toString()
+                image: Music.instance.getAlbumCover(album)
               ),
 
               const SizedBox(height: 12,),
@@ -146,7 +142,7 @@ class AlbumView extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       await PlayerModel.player.setShuffleModeEnabled(false);
-                      await PlayerModel.instance.setPlaylist(album.songs!, index: 0);
+                      await PlayerModel.instance.setPlaylist(album.song, index: 0);
                       await PlayerModel.player.play();
                     },
                     child: const Icon(Icons.play_arrow),
@@ -155,7 +151,7 @@ class AlbumView extends StatelessWidget {
                   FilledButton(
                     onPressed: () async {
                       await PlayerModel.player.setShuffleModeEnabled(true);
-                      await PlayerModel.instance.setPlaylist(album.songs!);
+                      await PlayerModel.instance.setPlaylist(album.song);
                       await PlayerModel.player.play();
                     },
                     child: const Icon(Icons.shuffle),
@@ -170,11 +166,11 @@ class AlbumView extends StatelessWidget {
         
         return InkWell(
           onTap: () async {
-            await PlayerModel.instance.setPlaylist(album.songs!, index: index - 1);
+            await PlayerModel.instance.setPlaylist(album.song, index: index - 1);
             await PlayerModel.player.play();
           },
 
-          child: TrackThumbnail(song: album.songs![index - 1], index: index)
+          child: TrackThumbnail(song: album.song[index - 1], index: index)
         );
       },
 
