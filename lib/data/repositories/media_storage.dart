@@ -5,9 +5,12 @@ import 'package:path_provider/path_provider.dart';
 class MediaStorage {
   static Future saveImage(Uri url, String name) async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    http.Response response = await http.get(url);
-
     File img = File("${documentsDirectory.path}/$name");
+
+    if (await img.exists()) {
+      return;
+    }
+    http.Response response = await http.get(url);
     await img.writeAsBytes(response.bodyBytes);
   }
 

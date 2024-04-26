@@ -100,35 +100,35 @@ class Music {
 
   Future<Uri> getSongCover(Song song) async {
     try {
-      return await MediaStorage.getImage(song.id);
+      return await MediaStorage.getImage(song.coverArt!);
     } catch (_) {
       await MediaStorage.saveImage(
           Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": song.coverArt})),
-          song.id);
-      return await MediaStorage.getImage(song.id);
+          song.coverArt!);
+      return await MediaStorage.getImage(song.coverArt!);
     }
   }
 
   Future<Uri> getAlbumCover(Album album) async {
     try {
-      return await MediaStorage.getImage(album.id);
+      return await MediaStorage.getImage(album.coverArt!);
     } catch (_) {
       await MediaStorage.saveImage(
           Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt})),
-          album.id);
-      return await MediaStorage.getImage(album.id);
+          album.coverArt!);
+      return await MediaStorage.getImage(album.coverArt!);
     }
   }
 
   Future<Uri> getPlaylistCover(Playlist playlist) async {
     try {
-      return await MediaStorage.getImage(playlist.id);
+      return await MediaStorage.getImage(playlist.coverArt!);
     } catch (_) {
       await MediaStorage.saveImage(
           Uri.parse(
               HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt})),
-          playlist.id);
-      return await MediaStorage.getImage(playlist.id);
+          playlist.coverArt!);
+      return await MediaStorage.getImage(playlist.coverArt!);
     }
   }
 }
