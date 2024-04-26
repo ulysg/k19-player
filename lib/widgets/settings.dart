@@ -89,7 +89,7 @@ class SettingsViewState extends State<SettingsView> {
                   height: 48,
                   child: FilledButton(
                     child: const Text("Save"),
-                    onPressed: () => Music.instance.setActualConnection(user, password, hostname),
+                    onPressed: () => Music.instance.savePref(user, password, hostname),
                   )
                 )
               ],

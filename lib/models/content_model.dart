@@ -1,5 +1,3 @@
-import "dart:math";
-
 import "package:flutter/material.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/album.dart";
@@ -52,8 +50,9 @@ class ContentModel extends ChangeNotifier {
   ContentModel._();
 
   getContent() async {
-    await Music.instance.refreshCache();
+    // await Music.instance.refreshCache();
     songs = await Music.instance.getRandomSongs();
+    print("SONGS");
     albums =  await Music.instance.getAlbums();
     playlists = await Music.instance.getPlaylists();
 

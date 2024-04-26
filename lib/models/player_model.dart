@@ -92,14 +92,14 @@ class PlayerModel extends ChangeNotifier {
 
   AudioSource songToAudioSource(Song song) {
     return AudioSource.uri(
-      Music.instance.getSongUri(song),
+      Music.getSongUri(song),
 
       tag: MediaItem(
         id: song.id,
         title: song.title ?? "notitle",
         artist: song.artist ?? "noartist",
         album: song.album ?? "noalbum",
-        artUri: Music.instance.getSongCover(song),
+        artUri: Music.getSongCover(song),
       )
     );
   }
