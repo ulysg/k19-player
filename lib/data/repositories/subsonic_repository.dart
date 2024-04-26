@@ -23,7 +23,6 @@ class SubsonicRepository {
   List<T> _parseResponse<T>(T Function(Map<String, dynamic> json) fromJson,
       Map<String, dynamic> r, List<String> parentKeys) {
     dynamic result = r;
-
     for (var key in parentKeys) {
       if (result.containsKey(key)) {
         result = result[key];
@@ -38,12 +37,35 @@ class SubsonicRepository {
     }
   }
 
+  Future<List<T>> fetchAll<T>(
+      Future<List<T>> Function({int size, int offset}) fnc,
+      int counter,
+      int batchSize) async {
+    List<T> buffer, result = [];
+    int counter = 0;
+
+    buffer = await fnc(size: batchSize, offset: counter);
+    while (buffer.isNotEmpty) {
+      counter += batchSize;
+      result.addAll(buffer);
+      buffer = await fnc(size: batchSize, offset: counter);
+    }
+
+    return result;
+  }
+
   Future<List<Song>> getRandomSongs() async {
     final r = await _httpHelper.get("getRandomSongs");
     return _parseResponse<Song>(Song.fromJson, r, ["randomSongs", "song"]);
   }
 
   Future<List<Playlist>> getPlaylists({String? username}) async {
+    final r = await _httpHelper.get("getPlaylists", {"username": username});
+    return _parseResponse<Playlist>(
+        Playlist.fromJson, r, ["playlists", "playlist"]);
+  }
+
+  Future<List<Playlist>> getPlaylistsFull({String? username}) async {
     final r = await _httpHelper.get("getPlaylists", {"username": username});
     List<Playlist> playlists = _parseResponse<Playlist>(
         Playlist.fromJson, r, ["playlists", "playlist"]);
@@ -52,44 +74,57 @@ class SubsonicRepository {
     }));
   }
 
-  Future<List<Album>> getAlbums() async {
-    final r = await _httpHelper.get("getAlbumList", {"type": "random"});
-    List<Album> albums =
-        _parseResponse<Album>(Album.fromJson, r, ["albumList", "album"]);
-    return await Future.wait(albums.map((v) async {
-      return await getAlbum(v.id);
-    }));
-  }
-
-  Future<List<Artist>> getArtists() async {
-    final r = await _httpHelper.get("getArtists");
-    if (r.containsKey("artists") && r["artists"].containsKey("index")) {
-      final List<dynamic> indexList = r["artists"]["index"];
-      List<Artist> artists = indexList
-          .expand((v) => v["artist"])
-          .map((v) => Artist.fromJson(v))
-          .toList();
-      return await Future.wait(artists.map((v) async {
-        return await getArtist(v.id!);
-      }));
-    }
-    throw Exception("Error during parsing");
-  }
-
   Future<Playlist> getPlaylist(String id) async {
     final r = await _httpHelper.get("getPlaylist", {"id": id});
     return Playlist.fromJson(r["playlist"]);
   }
 
-  Future<List<Song>> getAllSongs() async {
-    final List<Artist> artists = await getArtists();
-    final List<Album> albums =
-        artists.expand((artist) => artist.album).toList();
-    final List<Album> fullAlbums = await Future.wait(albums.map((v) async {
-      return await getAlbum(v.id);
-    }).toList());
-    final List<Song> songs = fullAlbums.expand((album) => album.song).toList();
-    return songs;
+  Future<List<Song>> songs({int size = 20, int offset = 0}) async {
+    try {
+      return _parseResponse(
+          Song.fromJson,
+          await _httpHelper.get("search3", {
+            "artistCount": 0,
+            "albumCount": 0,
+            "songCount": size,
+            "songOffset": offset
+          }),
+          ["searchResult3", "song"]);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<Album>> albums({int size = 20, int offset = 0}) async {
+    try {
+      return _parseResponse(
+          Album.fromJson,
+          await _httpHelper.get("search3", {
+            "artistCount": 0,
+            "albumCount": size,
+            "albumOffset": offset,
+            "songCount": 0
+          }),
+          ["searchResult3", "album"]);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<Artist>> artists({int size = 20, int offset = 0}) async {
+    try {
+      return _parseResponse(
+          Artist.fromJson,
+          await _httpHelper.get("search3", {
+            "artistCount": size,
+            "artistOffset": offset,
+            "albumCount": 0,
+            "songCount": 0
+          }),
+          ["searchResult3", "artist"]);
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<Artist> getArtist(String id) async {

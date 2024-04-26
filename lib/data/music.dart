@@ -1,4 +1,6 @@
+import 'package:http/http.dart';
 import 'package:k19_player/data/helpers/http_helper.dart';
+import 'package:k19_player/data/helpers/tools.dart';
 import 'package:k19_player/data/repositories/db_repository.dart';
 import 'package:k19_player/data/repositories/subsonic_repository.dart';
 import 'package:k19_player/domain/entities/album.dart';
@@ -13,82 +15,55 @@ class Music {
   SubsonicRepository subsonicRepository = SubsonicRepository();
   Connection? connection;
 
-  Music._() {
-    connection = Connection("https://demo.navidrome.org", "demo", "demo", "yes",
-        "1.15.1", "k19-player");
-  }
+  Music._();
 
   static Music get instance => _instance ??= Music._();
 
-  Future<bool> checkCacheAvailable(String value) async {
+  Future checkCacheAvailable(String value) async {
+    if (connection == null) {
+      await getActualConnection();
+    }
     final lastUpdate = await dbRepository.getLastUpdate();
     if (lastUpdate.difference(DateTime.now()).inDays.abs() > 1 ||
         !await dbRepository.checkIfValueExist(value)) {
-      refreshCache();
-      return false;
+      await refreshCache();
     }
-    return true;
   }
 
-  Future<List<Connection>> getConnections() async {
-    return await dbRepository.getConnections();
+  Future<Connection> getActualConnection() async {
+    connection = await dbRepository.getActualConnection();
+    return connection!;
   }
 
-  Future addConnection(Connection connection) async {
-    await dbRepository.addConnection(connection);
-  }
-
-  setConnection(Connection connection) {
-    this.connection = connection;
+  Future setActualConnection(
+      String url, String username, String password) async {
+    await dbRepository.setActualConnection(Connection("https://music.ulys.ch",
+        "test", "password123", "yes", "1.15.1", "k19-player"));
   }
 
   Future<List<Song>> getRandomSongs() async {
-    if (await checkCacheAvailable("songs")) {
-      return dbRepository.getSongs();
-    }
-    return await subsonicRepository.getAllSongs();
+    await checkCacheAvailable("songs");
+    return dbRepository.getSongs();
+  }
+
+  Future<List<Song>> getSongs() async {
+    await checkCacheAvailable("songs");
+    return dbRepository.getSongs();
   }
 
   Future<List<Playlist>> getPlaylists() async {
-    if (await checkCacheAvailable("playlists")) {
-      return dbRepository.getPlaylists();
-    }
-    return subsonicRepository.getPlaylists();
+    await checkCacheAvailable("playlists");
+    return dbRepository.getPlaylists();
   }
 
   Future<List<Album>> getAlbums() async {
-    if (await checkCacheAvailable("albums")) {
-      return dbRepository.getAlbums();
-    }
-    return subsonicRepository.getAlbums();
+    await checkCacheAvailable("albums");
+    return dbRepository.getAlbums();
   }
 
   Future<List<Artist>> getArtists() async {
-    if (await checkCacheAvailable("artists")) {
-      return dbRepository.getArtists();
-    }
-    return subsonicRepository.getArtists();
-  }
-
-  Future<Playlist> getPlaylist(String id) async {
-    if (await checkCacheAvailable("playlists")) {
-      return dbRepository.getPlaylist(id);
-    }
-    return subsonicRepository.getPlaylist(id);
-  }
-
-  Future<Artist> getArtist(String id) async {
-    if (await checkCacheAvailable("artists")) {
-      return dbRepository.getArtist(id);
-    }
-    return subsonicRepository.getArtist(id);
-  }
-
-  Future<Album> getAlbum(String id) async {
-    if (await checkCacheAvailable("albums")) {
-      return dbRepository.getAlbum(id);
-    }
-    return subsonicRepository.getAlbum(id);
+    await checkCacheAvailable("artists");
+    return dbRepository.getArtists();
   }
 
   Future<bool> ping() async {
@@ -100,36 +75,38 @@ class Music {
   }
 
   Future refreshCache() async {
-    List<Artist> artists = await subsonicRepository.getArtists();
-    List<Album> albums = await subsonicRepository.getAlbums();
-    List<Playlist> playlists = await subsonicRepository.getPlaylists();
-    List<Song> songs = await subsonicRepository.getAllSongs();
+    if (connection == null) {
+      await getActualConnection();
+    }
+    List<Album> albums =
+        await subsonicRepository.fetchAll(subsonicRepository.albums, 0, 5000);
+    List<Song> songs =
+        await subsonicRepository.fetchAll(subsonicRepository.songs, 0, 5000);
+    List<Artist> artists =
+        await subsonicRepository.fetchAll(subsonicRepository.artists, 0, 5000);
+    List<Playlist> playlists = await subsonicRepository.getPlaylistsFull();
 
-    await dbRepository.setArtists(artists);
-    await dbRepository.setAlbums(albums);
-    await dbRepository.setPlaylist(playlists);
+    await dbRepository.setAlbums(Tools.mergeSongsIntoAlbum(songs, albums));
+    await dbRepository.setArtists(Tools.mergeAlbumsIntoArtist(albums, artists));
     await dbRepository.setSongs(songs);
+    await dbRepository.setPlaylist(playlists);
     await dbRepository.setLastUpdate(DateTime.now());
   }
 
-  savePref(String username, String password, String hostname) {
-    print("Saved pref $username, $password, $hostname");
-  }
-
-  static Uri getSongUri(Song song) {
+  Uri getSongUri(Song song) {
     return Uri.parse(HttpHelper.getStream(song.id));
   }
 
-  static Uri getSongCover(Song song) {
+  Uri getSongCover(Song song) {
     return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": song.coverArt}));
   }
 
-  static Uri getAlbumCover(Album album) {
+  Uri getAlbumCover(Album album) {
     return Uri.parse(
         HttpHelper.buildUrl("getCoverArt", {"id": album.coverArt}));
   }
 
-  static Uri getPlaylistCover(Playlist playlist) {
+  Uri getPlaylistCover(Playlist playlist) {
     return Uri.parse(
         HttpHelper.buildUrl("getCoverArt", {"id": playlist.coverArt}));
   }

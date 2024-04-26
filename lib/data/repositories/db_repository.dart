@@ -19,7 +19,6 @@ class DbRepository {
   static DbRepository get instance => _instance ??= DbRepository._();
 
   Future setLastUpdate(DateTime dt) async {
-    // TODO: I do not like to write this line every time. It should be refactored.
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("lastUpdate", dt.toIso8601String());
   }
@@ -60,6 +59,16 @@ class DbRepository {
     return connections.map((v) => Connection.fromJson(json.decode(v))).toList();
   }
 
+  Future<Connection> getActualConnection() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Connection.fromJson(json.decode(prefs.getString("connection")!));
+  }
+
+  Future setActualConnection(Connection connection) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("connection", jsonEncode(connection.toJson()));
+  }
+
   Future setArtists(List<Artist> artists) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
@@ -88,107 +97,32 @@ class DbRepository {
     this.albums = albums;
   }
 
-  Future<List<Song>> getSongs({int size = -1}) async {
-    if (songs == null) {
+  Future<List<T>> getList<T>(List<T>? data,
+      T Function(Map<String, dynamic>) func, String key, int size) async {
+    if (data == null || data.isEmpty) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? randomSongs = prefs.getStringList("songs");
-      songs = randomSongs!.map((v) => Song.fromJson(json.decode(v))).toList();
-      return Tools.getFirstXItems(songs!, size);
+      final List<String>? listString = prefs.getStringList(key);
+      if (listString == null) {
+        return [];
+      }
+      data = listString.map((v) => func(json.decode(v))).toList();
     }
-    return Tools.getFirstXItems(songs!, size);
+    return Tools.getFirstXItems(data, size);
+  }
+
+  Future<List<Song>> getSongs({int size = -1}) async {
+    return getList(songs, Song.fromJson, "songs", size);
   }
 
   Future<List<Album>> getAlbums({int size = -1}) async {
-    if (albums == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? albumsString = prefs.getStringList("albums");
-      albums =
-          albumsString!.map((v) => Album.fromJson(json.decode(v))).toList();
-      return Tools.getFirstXItems(albums!, size);
-    }
-    return Tools.getFirstXItems(albums!, size);
+    return getList(albums, Album.fromJson, "albums", size);
   }
 
   Future<List<Playlist>> getPlaylists({int size = -1}) async {
-    if (playlists == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? playlistsString = prefs.getStringList("playlists");
-      playlists = playlistsString!
-          .map((v) => Playlist.fromJson(json.decode(v)))
-          .toList();
-      return Tools.getFirstXItems(playlists!, size);
-    }
-    return Tools.getFirstXItems(playlists!, size);
+    return getList(playlists, Playlist.fromJson, "playlists", size);
   }
 
   Future<List<Artist>> getArtists({int size = -1}) async {
-    if (artists == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? artistsString = prefs.getStringList("artists");
-      artists =
-          artistsString!.map((v) => Artist.fromJson(json.decode(v))).toList();
-      return Tools.getFirstXItems(artists!, size);
-    }
-    return Tools.getFirstXItems(artists!, size);
-  }
-
-  Future<Album> getAlbum(String id) async {
-    if (albums == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? albumsString = prefs.getStringList("albums");
-      albums =
-          albumsString!.map((v) => Album.fromJson(json.decode(v))).toList();
-    }
-    for (final album in albums!) {
-      if (album.id == id) {
-        return album;
-      }
-    }
-    throw Exception("album not found");
-  }
-
-  Future<Artist> getArtist(String id) async {
-    if (artists == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? artistsString = prefs.getStringList("artists");
-      artists =
-          artistsString!.map((v) => Artist.fromJson(json.decode(v))).toList();
-    }
-    for (final artist in artists!) {
-      if (artist.id == id) {
-        return artist;
-      }
-    }
-    throw Exception("artist not found");
-  }
-
-  Future<Playlist> getPlaylist(String id) async {
-    if (playlists == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? playlistsString = prefs.getStringList("playlists");
-      playlists = playlistsString!
-          .map((v) => Playlist.fromJson(json.decode(v)))
-          .toList();
-    }
-    for (final playlist in playlists!) {
-      if (playlist.id == id) {
-        return playlist;
-      }
-    }
-    throw Exception("playlist not found");
-  }
-
-  Future<Song> getSong(String id) async {
-    if (songs == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final List<String>? randomSongs = prefs.getStringList("songs");
-      songs = randomSongs!.map((v) => Song.fromJson(json.decode(v))).toList();
-    }
-    for (final song in songs!) {
-      if (song.id == id) {
-        return song;
-      }
-    }
-    throw Exception("song not found");
+    return getList(artists, Artist.fromJson, "artists", size);
   }
 }

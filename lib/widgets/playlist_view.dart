@@ -70,7 +70,7 @@ class PlaylistThumbnail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CoverArt(
-            height: 48, image: Music.getPlaylistCover(playlist).toString()),
+            height: 48, image: Music.instance.getPlaylistCover(playlist).toString()),
         const SizedBox(width: 24),
         Flexible(
             flex: 1,
@@ -109,7 +109,7 @@ class PlaylistView extends StatelessWidget {
               children: [
                 CoverArt(
                     height: 144,
-                    image: Music.getPlaylistCover(playlist).toString()),
+                    image: Music.instance.getPlaylistCover(playlist).toString()),
                 const SizedBox(
                   height: 12,
                 ),
@@ -182,7 +182,7 @@ class TrackThumbnail extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        CoverArt(height: 36, image: Music.getSongCover(song).toString()),
+        CoverArt(height: 36, image: Music.instance.getSongCover(song).toString()),
         const SizedBox(width: 24),
         Flexible(
           flex: 1,

@@ -55,7 +55,7 @@ class AlbumThumbnail extends StatelessWidget {
       children: [
         CoverArt(
           height: 96,
-          image: Music.getAlbumCover(album).toString(),
+          image: Music.instance.getAlbumCover(album).toString(),
         ),
         const SizedBox(height: 6),
         Text(album.name ?? "",
@@ -88,7 +88,7 @@ class AlbumView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CoverArt(
-                    height: 144, image: Music.getAlbumCover(album).toString()),
+                    height: 144, image: Music.instance.getAlbumCover(album).toString()),
                 const SizedBox(
                   height: 12,
                 ),

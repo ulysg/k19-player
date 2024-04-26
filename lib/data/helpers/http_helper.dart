@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:crypto/crypto.dart';
 import 'package:k19_player/data/music.dart';
 import 'package:k19_player/domain/entities/connection.dart';
 
