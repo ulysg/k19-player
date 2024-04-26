@@ -19,10 +19,14 @@ class CoverArt extends StatelessWidget {
         future: image,
 
         builder: (context, snapshot) {
-          Icon icon = Icon(
-            Icons.album,
-            size: height.toDouble(),
-            color: Theme.of(context).colorScheme.onSecondary,
+          Widget icon = Container(
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+
+            child: Icon(
+              Icons.album,
+              size: height.toDouble(),
+              color: Theme.of(context).colorScheme.onSecondary,
+            )
           );
 
           switch (snapshot.connectionState) {
