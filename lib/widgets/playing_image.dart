@@ -1,19 +1,21 @@
 import "dart:io";
 
 import "package:flutter/material.dart";
+import "package:just_audio_background/just_audio_background.dart";
+import "package:k19_player/data/music.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:provider/provider.dart";
 
 class CoverArt extends StatelessWidget {
-  final int height;
+  final int size;
   final Future<Uri?> image;
 
-  const CoverArt({super.key, required this.height, required this.image});
+  const CoverArt({super.key, required this.size, required this.image});
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(height / 12),
+      borderRadius: BorderRadius.circular(size / 12),
 
       child: FutureBuilder(
         future: image,
@@ -24,7 +26,7 @@ class CoverArt extends StatelessWidget {
 
             child: Icon(
               Icons.album,
-              size: height.toDouble(),
+              size: size.toDouble(),
               color: Theme.of(context).colorScheme.onSecondary,
             )
           );
@@ -36,6 +38,9 @@ class CoverArt extends StatelessWidget {
               }
            
               return Image.file(
+                height: size.toDouble(),
+                width: size.toDouble(),
+                fit: BoxFit.contain,
                 File.fromUri(snapshot.data!)
               );
 
@@ -49,19 +54,23 @@ class CoverArt extends StatelessWidget {
 }
 
 class PlayingImage extends StatelessWidget {
-  final int height;
+  final int size;
 
-  const PlayingImage({super.key, required this.height});
+  const PlayingImage({super.key, required this.size});
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerModel, Uri?>(
-      selector: (_, playerModel) => playerModel.mediaItem?.artUri,
+    return Selector<PlayerModel, MediaItem?>(
+      selector: (_, playerModel) => playerModel.mediaItem,
 
-      builder: (context, image, child) {
+      builder: (context, mediaItem, child) {
+        if (mediaItem == null) {
+          return SizedBox(height: size.toDouble(), width: size.toDouble());
+        }
+        
         return CoverArt(
-          height: height, 
-          image: Future(() => image)
+          size: size, 
+          image: Music.instance.getSongCover(mediaItem.extras!["song"])
         );
       });
   }

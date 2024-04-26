@@ -69,7 +69,7 @@ class AlbumThumbnail extends StatelessWidget {
     return Column(
       children: [
         CoverArt(
-          height: 96,
+          size: 96,
           image: Music.instance.getAlbumCover(album)
         ),
         
@@ -110,7 +110,7 @@ class AlbumView extends StatelessWidget {
 
             children: [
               CoverArt(
-                height: 144,
+                size: 144,
                 image: Music.instance.getAlbumCover(album)
               ),
 

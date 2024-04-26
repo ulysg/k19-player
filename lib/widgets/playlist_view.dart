@@ -74,7 +74,7 @@ class PlaylistThumbnail extends StatelessWidget {
 
       children: [
         CoverArt(
-          height: 48,
+          size: 48,
           image: Music.instance.getPlaylistCover(playlist)
         ),
 
@@ -122,7 +122,7 @@ class PlaylistView extends StatelessWidget {
 
             children: [
               CoverArt(
-                height: 144,
+                size: 144,
                 image: Music.instance.getPlaylistCover(playlist)
               ),
 
@@ -208,7 +208,7 @@ class TrackThumbnail extends StatelessWidget {
 
       children: [
         CoverArt(
-          height: 36, 
+          size: 36, 
           image: Music.instance.getSongCover(song)
         ),
 

@@ -98,6 +98,10 @@ class Music {
     return Uri.parse(HttpHelper.getStream(song.id));
   }
 
+  Uri getSongCoverHTTP(Song song) {
+    return Uri.parse(HttpHelper.buildUrl("getCoverArt", {"id": song.coverArt}));
+  }
+
   Future<Uri> getSongCover(Song song) async {
     try {
       return await MediaStorage.getImage(song.coverArt!);

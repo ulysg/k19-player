@@ -99,7 +99,8 @@ class PlayerModel extends ChangeNotifier {
         title: song.title ?? "notitle",
         artist: song.artist ?? "noartist",
         album: song.album ?? "noalbum",
-        artUri: await Music.instance.getSongCover(song),
+        artUri: Music.instance.getSongCoverHTTP(song),
+        extras: {"song": song},
       )
     );
   }

@@ -21,7 +21,7 @@ class SmallPlayer extends StatelessWidget {
 
           children: [
             const PlayingImage(
-              height: 48,
+              size: 48,
             ),
 
             const SizedBox(width: 12),

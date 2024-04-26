@@ -21,7 +21,7 @@ class Player extends StatelessWidget {
           const SizedBox(height: 0),
 
           const PlayingImage(
-            height: 288,
+            size: 288,
           ),
 
           const MusicSlider(),

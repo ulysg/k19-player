@@ -52,7 +52,7 @@ class SongThumbnail extends StatelessWidget {
 
       children: [
         CoverArt(
-          height: 48, 
+          size: 48, 
           image: Music.instance.getSongCover(song)
         ),
 
