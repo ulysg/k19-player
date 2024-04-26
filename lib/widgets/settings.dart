@@ -1,6 +1,10 @@
 import "dart:core";
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:k19_player/data/music.dart";
+import "package:k19_player/domain/entities/connection.dart";
+import "package:k19_player/models/content_model.dart";
+import "package:provider/provider.dart";
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -10,9 +14,11 @@ class SettingsView extends StatefulWidget {
 }
 
 class SettingsViewState extends State<SettingsView> {
-  String user = "";
-  String password = "";
-  String hostname = "";
+  TextEditingController userController = TextEditingController(text: ContentModel.instance.connection?.username ?? "");
+  TextEditingController passwordController = TextEditingController(text: "");
+  TextEditingController urlController = TextEditingController(text: ContentModel.instance.connection?.url ?? "");
+  bool canConnect = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +31,7 @@ class SettingsViewState extends State<SettingsView> {
         child: Column(
           children: [
             TextField(
-              onChanged: (s) {
-                setState(() {
-                  user = s;
-                });
-              },
-
+              controller: userController,
               decoration: const InputDecoration(
                 labelText: "Username",
                 hintText: "username",
@@ -41,12 +42,7 @@ class SettingsViewState extends State<SettingsView> {
             const SizedBox(height: 24),
 
             TextField(
-              onChanged: (s) {
-                setState(() {
-                  password = s;
-                });
-              },
-
+              controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Password",
@@ -58,14 +54,9 @@ class SettingsViewState extends State<SettingsView> {
             const SizedBox(height: 24),
 
             TextField(
-              onChanged: (s) {
-                setState(() {
-                  hostname = s;
-                });
-              },
-
+              controller: urlController,
               decoration: const InputDecoration(
-                labelText: "Server hostname",
+                labelText: "Server URL",
                 hintText: "https://exemple.com",
                 border: OutlineInputBorder()
               ),
@@ -75,23 +66,39 @@ class SettingsViewState extends State<SettingsView> {
 
             Row(
               children: [
-                SizedBox(
+                Expanded(child: SizedBox(
                   height: 48,
-                    child: FilledButton(
-                    child: const Text("Check connection"),
-                    onPressed: () => print("lol"),
+
+                  child: FilledButton(
+                    onPressed: () async {
+                      ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text);
+                      setState(() {
+                        isLoading = true;
+                      });
+
+                      bool result = await Music.instance.ping();
+
+                      setState(() {
+                        canConnect = result;
+                        isLoading = false;
+                      });
+                    },
+
+                    child: isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
+                      : const Text("Check connection", textAlign: TextAlign.center),
                   ),
-                ),
+                )),
 
                 const SizedBox(width: 24),
 
-                SizedBox(
+                Expanded(child: SizedBox(
                   height: 48,
+
                   child: FilledButton(
+                    onPressed: canConnect ? () => ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text) : null,
                     child: const Text("Save"),
-                    onPressed: () => Music.instance.setActualConnection(user, password, hostname),
                   )
-                )
+                ))
               ],
             )
           ],

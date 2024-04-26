@@ -3,6 +3,7 @@ import "dart:io";
 import "package:flutter/material.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/data/music.dart";
+import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:provider/provider.dart";
 
@@ -65,12 +66,15 @@ class PlayingImage extends StatelessWidget {
 
       builder: (context, mediaItem, child) {
         if (mediaItem == null) {
-          return SizedBox(height: size.toDouble(), width: size.toDouble());
+          return CoverArt(
+            size: size,
+            image: Future(() => null)
+          );
         }
         
         return CoverArt(
           size: size, 
-          image: Music.instance.getSongCover(mediaItem.extras!["song"])
+          image: Music.instance.getSongCover(ContentModel.instance.getSong(mediaItem.id))
         );
       });
   }

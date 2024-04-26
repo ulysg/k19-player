@@ -71,11 +71,28 @@ class MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
+    ContentModel.instance.addListener(() {
+      if (!ContentModel.instance.connectionSet) {
+        showModalBottomSheet(
+          context: context,
+          isDismissible: false,
+          enableDrag: false,
+          isScrollControlled: true,
+
+          builder: (context) {
+            return SettingsView();
+          }
+        );
+      }
+    });
+
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
-            currentPageIndex = index;
+            if (ContentModel.instance.connection != null) {
+              currentPageIndex = index;
+            }
           });
         },
 

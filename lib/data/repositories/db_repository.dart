@@ -59,8 +59,13 @@ class DbRepository {
     return connections.map((v) => Connection.fromJson(json.decode(v))).toList();
   }
 
-  Future<Connection> getActualConnection() async {
+  Future<Connection?> getActualConnection() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (!prefs.containsKey("connection")) {
+      return null;
+    }
+
     return Connection.fromJson(json.decode(prefs.getString("connection")!));
   }
 

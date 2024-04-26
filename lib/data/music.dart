@@ -31,13 +31,11 @@ class Music {
     }
   }
 
-  Future<Connection> getActualConnection() async {
-    connection = await dbRepository.getActualConnection();
-    return connection!;
+  Future<Connection?> getActualConnection() async {
+    return dbRepository.getActualConnection();
   }
 
-  Future setActualConnection(
-      String url, String username, String password) async {
+  Future setActualConnection(String url, String username, String password) async {
     await dbRepository.setActualConnection(Connection("https://music.ulys.ch",
         "test", "password123", "yes", "1.15.1", "k19-player"));
   }

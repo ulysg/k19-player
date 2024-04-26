@@ -12,7 +12,7 @@ enum PlayingState {
 
 class PlayerModel extends ChangeNotifier {
   static final player = AudioPlayer();
-  
+
   PlayingState playingState = PlayingState.paused;
   int position = 0;
   int duration = 0;
@@ -100,7 +100,6 @@ class PlayerModel extends ChangeNotifier {
         artist: song.artist ?? "noartist",
         album: song.album ?? "noalbum",
         artUri: Music.instance.getSongCoverHTTP(song),
-        extras: {"song": song},
       )
     );
   }

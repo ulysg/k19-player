@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/album.dart";
+import "package:k19_player/domain/entities/connection.dart";
 import "package:k19_player/domain/entities/playlist.dart";
 import "package:k19_player/domain/entities/song.dart";
 
@@ -37,12 +38,15 @@ enum PlaylistSortOrder {
 }
 
 class ContentModel extends ChangeNotifier {
+  bool isConnected = false;
   List<Album> albums = List.empty();
   List<Song> songs = List.empty();
   List<Playlist> playlists = List.empty();
-  SortOrder songsOrder = SortOrder.nameAsc;
-  SortOrder albumsOrder = SortOrder.nameAsc;
+  SortOrder songsOrder = SortOrder.random;
+  SortOrder albumsOrder = SortOrder.random;
   PlaylistSortOrder playlistsOrder = PlaylistSortOrder.nameAsc;
+  Connection? connection;
+  bool connectionSet = true;
 
   static ContentModel? _instance;
   static ContentModel get instance => _instance ??= ContentModel._();
@@ -50,11 +54,30 @@ class ContentModel extends ChangeNotifier {
   ContentModel._();
 
   getContent() async {
+    connection = await Music.instance.getActualConnection();
+    connectionSet = connection != null;
+
+    if (!connectionSet) {
+      notifyListeners();
+      return;
+    }   
+
+    print("lol");
+
     songs = await Music.instance.getRandomSongs();
     albums =  await Music.instance.getAlbums();
     playlists = await Music.instance.getPlaylists();
 
     notifyListeners();
+  }
+
+  setConnection(String username, String password, String url) async {
+    await Music.instance.setActualConnection(url, username, password);
+    connection = await Music.instance.getActualConnection();
+  }
+
+  Song getSong(String id) {
+    return songs.where((s) => s.id == id).first;
   }
 
   changeSongsOrder(SortOrder order) {
