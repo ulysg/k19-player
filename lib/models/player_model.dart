@@ -16,6 +16,7 @@ class PlayerModel extends ChangeNotifier {
   PlayingState playingState = PlayingState.paused;
   int position = 0;
   int duration = 0;
+
   MediaItem? mediaItem;
   int playingIndex = -1;
   int maxIndex = 0;

@@ -41,9 +41,11 @@ class ContentModel extends ChangeNotifier {
   List<Album> albums = List.empty();
   List<Song> songs = List.empty();
   List<Playlist> playlists = List.empty();
+
   SortOrder songsOrder = SortOrder.random;
   SortOrder albumsOrder = SortOrder.random;
   PlaylistSortOrder playlistsOrder = PlaylistSortOrder.nameAsc;
+
   Connection? connection;
   bool connectionSet = true;
   bool isLoading = false;
@@ -67,7 +69,9 @@ class ContentModel extends ChangeNotifier {
     }   
 
     songs = await Music.instance.getSongs();
+    songs.shuffle();
     albums =  await Music.instance.getAlbums();
+    albums.shuffle();
     playlists = await Music.instance.getPlaylists();
     isLoading = false;
 
