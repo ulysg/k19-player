@@ -71,80 +71,75 @@ class MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    ContentModel.instance.addListener(() {
-      if (!ContentModel.instance.connectionSet) {
-        showModalBottomSheet(
-          context: context,
-          isDismissible: false,
-          enableDrag: false,
-          isScrollControlled: true,
+    return Selector<ContentModel, bool>(
+      selector: (_, contentModel) => contentModel.connectionSet,
 
-          builder: (context) {
-            return SettingsView();
-          }
+      builder: (context, connectionSet, child) {
+        if (!connectionSet) {
+          return const SettingsView();
+        }
+
+        return Scaffold(
+          bottomNavigationBar: NavigationBar(
+            onDestinationSelected: (int index) {
+              setState(() {
+                if (ContentModel.instance.connection != null) {
+                  currentPageIndex = index;
+                }
+              });
+            },
+
+            selectedIndex: currentPageIndex,
+
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.album),
+                label: "Albums",
+              ),
+
+              NavigationDestination(
+                icon: Icon(Icons.featured_play_list),
+                label: "Playlists",
+              ),
+          
+              NavigationDestination(
+                icon: Icon(Icons.music_note),
+                label: "Songs",
+              ),
+
+              NavigationDestination(
+                icon: Icon(Icons.settings),
+                label: "Settings",
+              ),
+            ],
+          ),
+
+          body: [
+            SmallPlayerView(
+              key: UniqueKey(),
+              title: "Albums",
+              action: const AlbumDropdown(),
+              child: const AlbumGrid(),
+            ),
+        
+            SmallPlayerView(
+              key: UniqueKey(),
+              title: "Playlists",
+              action:  const PlaylistDropdown(),
+              child: const PlaylistList(),
+            ),
+
+            SmallPlayerView(
+              key: UniqueKey(),
+              title: "Songs",
+              action: const SongDropdown(),
+              child: const SongView(),
+            ),
+
+            const SettingsView()
+          ][currentPageIndex],
         );
       }
-    });
-
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            if (ContentModel.instance.connection != null) {
-              currentPageIndex = index;
-            }
-          });
-        },
-
-        selectedIndex: currentPageIndex,
-
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.album),
-            label: "Albums",
-          ),
-
-          NavigationDestination(
-            icon: Icon(Icons.featured_play_list),
-            label: "Playlists",
-          ),
-          
-          NavigationDestination(
-            icon: Icon(Icons.music_note),
-            label: "Songs",
-          ),
-
-          NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
-        ],
-      ),
-
-      body: [
-        SmallPlayerView(
-          key: UniqueKey(),
-          title: "Albums",
-          action: const AlbumDropdown(),
-          child: const AlbumGrid(),
-        ),
-        
-        SmallPlayerView(
-          key: UniqueKey(),
-          title: "Playlists",
-          action:  const PlaylistDropdown(),
-          child: const PlaylistList(),
-        ),
-
-        SmallPlayerView(
-          key: UniqueKey(),
-          title: "Songs",
-          action: const SongDropdown(),
-          child: const SongView(),
-        ),
-
-        const SettingsView()
-      ][currentPageIndex],
     );
   }
 }

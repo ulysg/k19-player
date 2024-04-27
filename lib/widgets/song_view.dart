@@ -15,22 +15,24 @@ class SongView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ContentModel>(
       builder: (context, contentModel, child) {
-        return ListView.separated(
-          padding: const EdgeInsets.all(24),
-          itemCount: contentModel.songs.length,
+        return Scrollbar(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(24),
+            itemCount: contentModel.songs.length,
 
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () async {
-                await PlayerModel.instance.setPlaylist(contentModel.songs, index: index);
-                await PlayerModel.player.play();
-              },
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () async {
+                  await PlayerModel.instance.setPlaylist(contentModel.songs, index: index);
+                  await PlayerModel.player.play();
+                },
 
-              child: SongThumbnail(song: contentModel.songs[index])
-            );
-          },
+                child: SongThumbnail(song: contentModel.songs[index])
+              );
+            },
 
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+          )
         );
       }
     );

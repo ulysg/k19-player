@@ -32,7 +32,8 @@ class Music {
   }
 
   Future<Connection?> getActualConnection() async {
-    return dbRepository.getActualConnection();
+    connection = await dbRepository.getActualConnection();
+    return connection;
   }
 
   Future setActualConnection(String url, String username, String password) async {

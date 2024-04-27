@@ -1,4 +1,5 @@
 import "dart:core";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/widgets.dart";
 import "package:k19_player/data/music.dart";
@@ -64,42 +65,80 @@ class SettingsViewState extends State<SettingsView> {
 
             const SizedBox(height: 24),
 
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+
+                        child: FilledButton(
+                          onPressed: () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            await ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text);
+                            bool result = await Music.instance.ping();
+
+                            setState(() {
+                              canConnect = result;
+                              isLoading = false;
+                            });
+                          },
+
+                          child: isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
+                            : const Text("Check connection", textAlign: TextAlign.center),
+                        ),
+                      )
+                    ),
+
+                    const SizedBox(width: 24),
+
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+
+                        child: FilledButton(
+                          onPressed: canConnect ? () async {
+                            await ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text);
+                            await ContentModel.instance.getContent();
+                          }
+                            : null,
+
+                          child: const Text("Save"),
+                        )
+                      )
+                    )
+                  ],
+                )
+              ]
+            ),
+
+            const SizedBox(height: 24),
+
             Row(
               children: [
-                Expanded(child: SizedBox(
-                  height: 48,
+                Expanded(
+                  child: SizedBox(
+                    height: 48,
 
-                  child: FilledButton(
-                    onPressed: () async {
-                      ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text);
-                      setState(() {
-                        isLoading = true;
-                      });
+                    child: FilledButton(
+                      onPressed: () async {
+                        await ContentModel.instance.refreshCache();
+                      },
 
-                      bool result = await Music.instance.ping();
+                      child: Selector<ContentModel, bool>(
+                        selector: (_, contentModel) => contentModel.isLoading,
 
-                      setState(() {
-                        canConnect = result;
-                        isLoading = false;
-                      });
-                    },
-
-                    child: isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
-                      : const Text("Check connection", textAlign: TextAlign.center),
-                  ),
-                )),
-
-                const SizedBox(width: 24),
-
-                Expanded(child: SizedBox(
-                  height: 48,
-
-                  child: FilledButton(
-                    onPressed: canConnect ? () => ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text) : null,
-                    child: const Text("Save"),
+                        builder: (context, isLoading, child) => isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
+                          : const Text("Sync database")
+                      ) 
+                    )
                   )
-                ))
-              ],
+                )
+              ]
             )
           ],
         )

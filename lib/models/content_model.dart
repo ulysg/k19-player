@@ -38,7 +38,6 @@ enum PlaylistSortOrder {
 }
 
 class ContentModel extends ChangeNotifier {
-  bool isConnected = false;
   List<Album> albums = List.empty();
   List<Song> songs = List.empty();
   List<Playlist> playlists = List.empty();
@@ -47,6 +46,7 @@ class ContentModel extends ChangeNotifier {
   PlaylistSortOrder playlistsOrder = PlaylistSortOrder.nameAsc;
   Connection? connection;
   bool connectionSet = true;
+  bool isLoading = false;
 
   static ContentModel? _instance;
   static ContentModel get instance => _instance ??= ContentModel._();
@@ -54,21 +54,32 @@ class ContentModel extends ChangeNotifier {
   ContentModel._();
 
   getContent() async {
+    isLoading = true;
+    notifyListeners();
+
     connection = await Music.instance.getActualConnection();
     connectionSet = connection != null;
 
     if (!connectionSet) {
+      isLoading = false;
       notifyListeners();
       return;
     }   
 
-    print("lol");
-
-    songs = await Music.instance.getRandomSongs();
+    songs = await Music.instance.getSongs();
     albums =  await Music.instance.getAlbums();
     playlists = await Music.instance.getPlaylists();
+    isLoading = false;
 
     notifyListeners();
+  }
+
+  refreshCache() async {
+    isLoading = true;
+    notifyListeners();
+
+    await Music.instance.refreshCache();
+    getContent();
   }
 
   setConnection(String username, String password, String url) async {

@@ -16,40 +16,42 @@ class AlbumGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ContentModel>(
       builder: (context, contentModel, child) {
-        return GridView.builder(
-          padding: const EdgeInsets.all(24),
-          itemCount: contentModel.albums.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
+        return Scrollbar(
+          child: GridView.builder(
+            padding: const EdgeInsets.all(24),
+            itemCount: contentModel.albums.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
 
-              onTap: () async {
-                Navigator.push(
-                  context,
+                onTap: () async {
+                  Navigator.push(
+                    context,
           
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Scaffold(
-                        appBar: AppBar(
-                          title: Text(contentModel.albums[index].name ?? "")
-                        ),
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Scaffold(
+                          appBar: AppBar(
+                            title: Text(contentModel.albums[index].name ?? "")
+                          ),
 
-                        body: Padding(
-                          padding: const EdgeInsets.all(24),
+                          body: Padding(
+                            padding: const EdgeInsets.all(24),
 
-                          child: AlbumView(album: contentModel.albums[index])
-                        )
-                      );
-                    }
-                  )
-                );
-              },
+                            child: AlbumView(album: contentModel.albums[index])
+                          )
+                        );
+                      }
+                    )
+                  );
+                },
 
-              child: AlbumThumbnail(album: contentModel.albums[index])
-            );
-          },
+                child: AlbumThumbnail(album: contentModel.albums[index])
+              );
+            },
+          )
         );
       }
     );

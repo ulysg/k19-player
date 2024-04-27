@@ -18,41 +18,43 @@ class PlaylistList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ContentModel>(
       builder: (context, contentModel, child) {
-        return ListView.separated(
-          padding: const EdgeInsets.all(24),
-          itemCount: contentModel.playlists.length,
+        return Scrollbar(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(24),
+            itemCount: contentModel.playlists.length,
 
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
 
-              onTap: () async {
-                Navigator.push(
-                  context,
+                onTap: () async {
+                  Navigator.push(
+                    context,
                 
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Scaffold(
-                        appBar: AppBar(
-                          title: Text(contentModel.playlists[index].name ?? "")
-                        ),
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Scaffold(
+                          appBar: AppBar(
+                            title: Text(contentModel.playlists[index].name ?? "")
+                          ),
 
-                        body: Padding(
-                          padding: const EdgeInsets.all(24),
+                          body: Padding(
+                            padding: const EdgeInsets.all(24),
 
-                          child: PlaylistView(playlist: contentModel.playlists[index])
-                        )
-                      );
-                    }
-                  )
-                );
-              },
+                            child: PlaylistView(playlist: contentModel.playlists[index])
+                          )
+                        );
+                      }
+                    )
+                  );
+                },
 
-              child: PlaylistThumbnail(playlist: contentModel.playlists[index])
-            );
-          },
+                child: PlaylistThumbnail(playlist: contentModel.playlists[index])
+              );
+            },
 
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+          )
         );
       }
     );

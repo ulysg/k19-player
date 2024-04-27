@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/player.dart";
@@ -117,7 +118,19 @@ class SmallPlayerView extends StatelessWidget {
                     actions: actions,
                   ),
 
-                  body: child,
+                  body: Selector<ContentModel, bool>(
+                    selector: (_, contentModel) => contentModel.isLoading,
+
+                    builder: (context, isLoading, _) {
+                      if (isLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator()
+                        );
+                      }
+
+                      return child;
+                    }
+                  )
                 );
               }  
             )
