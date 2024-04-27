@@ -19,6 +19,11 @@ class PlaylistList extends StatelessWidget {
     return Consumer<ContentModel>(
       builder: (context, contentModel, child) {
         return Scrollbar(
+          interactive: true,
+          thickness: 12,
+          radius: const Radius.circular(12),
+          thumbVisibility: true,
+
           child: ListView.separated(
             padding: const EdgeInsets.all(24),
             itemCount: contentModel.playlists.length,
