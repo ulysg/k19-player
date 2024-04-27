@@ -83,9 +83,7 @@ class MainViewState extends State<MainView> {
           bottomNavigationBar: NavigationBar(
             onDestinationSelected: (int index) {
               setState(() {
-                if (ContentModel.instance.connection != null) {
-                  currentPageIndex = index;
-                }
+                currentPageIndex = index;
               });
             },
 
