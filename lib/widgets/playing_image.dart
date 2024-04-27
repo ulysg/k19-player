@@ -41,7 +41,7 @@ class CoverArt extends StatelessWidget {
               return Image.file(
                 height: size.toDouble(),
                 width: size.toDouble(),
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 File.fromUri(snapshot.data!)
               );
 
