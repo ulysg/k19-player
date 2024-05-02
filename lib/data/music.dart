@@ -37,8 +37,7 @@ class Music {
   }
 
   Future setActualConnection(String url, String username, String password) async {
-    await dbRepository.setActualConnection(Connection("https://music.ulys.ch",
-        "test", "password123", "yes", "1.15.1", "k19-player"));
+    await dbRepository.setActualConnection(Connection(url, username, password, "yes", "1.15.1", "k19-player"));
   }
 
   Future<List<Song>> getRandomSongs() async {

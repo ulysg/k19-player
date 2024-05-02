@@ -98,7 +98,7 @@ class SettingsViewState extends State<SettingsView> {
                               isLoading = true;
                             });
 
-                            await ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text);
+                            await ContentModel.instance.setConnection(userController.text, passwordController.text, urlController.text);
                             bool result = await Music.instance.ping();
 
                             setState(() {
