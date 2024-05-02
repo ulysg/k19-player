@@ -11,7 +11,7 @@ class HttpHelper {
     String url = buildUrl(endpoint, pbody);
     Response r = await http.get(Uri.parse(url));
     if (r.statusCode == 200) {
-      return jsonDecode(r.body)["subsonic-response"];
+      return jsonDecode(utf8.decode(r.bodyBytes))["subsonic-response"];
     } else {
       throw Exception("Request failed");
     }
