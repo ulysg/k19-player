@@ -1,6 +1,6 @@
 {
 	"albums": "Albums",
-	"playlists": "Listes de lecture",
+	"playlists": "Playlists",
 	"songs": "Chansons",
 	"settings": "Paramètres",
 	"username": "Nom d'utilisateur",
@@ -9,6 +9,8 @@
 	"check": "Tester la connexion",
 	"save": "Sauvegarder",
 	"sync": "Syncronizer les données",
+	"welcome": "Bienvenue à K-19 !",
+	"login": "Merci d'ajouter vos identifiants :",
 
 	"random": "Aléatoire",
 	"name": "Nom",

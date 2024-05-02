@@ -94,6 +94,7 @@ class MainViewState extends State<MainView> {
 
             selectedIndex: currentPageIndex,
 
+
             destinations: [
               NavigationDestination(
                 icon: const Icon(Icons.album),

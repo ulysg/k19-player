@@ -17,8 +17,8 @@ class SongView extends StatelessWidget {
     return Consumer<ContentModel>(
       builder: (context, contentModel, child) {
         return Scrollbar(
-          thickness: 12,
-          radius: const Radius.circular(12),
+          thickness: 6,
+          radius: const Radius.circular(6),
           
           child: ListView.separated(
             padding: const EdgeInsets.all(24),
@@ -131,7 +131,7 @@ class SongDropdown extends StatelessWidget {
 
       builder: (context, songsOrder, child) {
         return DropdownMenu<SortOrder>(
-          width: 132,
+          width: 120,
           initialSelection: songsOrder,
 
           inputDecorationTheme: const InputDecorationTheme(

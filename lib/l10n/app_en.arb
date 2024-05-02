@@ -9,6 +9,8 @@
 	"check": "Check connection",
 	"save": "Save",
 	"sync": "Sync data",
+	"welcome": "Welcome to K-19!",
+	"login": "Please add your credentials:",
 
 	"random": "Random",
 	"name": "Name",

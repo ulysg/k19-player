@@ -24,6 +24,8 @@ class SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    String title = ContentModel.instance.connectionSet ? AppLocalizations.of(context)!.settings : AppLocalizations.of(context)!.welcome;
+
     return Scaffold(
       appBar: AppBar(
         leading: ImageIcon(
@@ -31,7 +33,7 @@ class SettingsViewState extends State<SettingsView> {
           color: Theme.of(context).colorScheme.onBackground
         ),
 
-        title: const Text("Settings")
+        title: Text(title)
       ),
 
       body: Padding(
@@ -39,6 +41,15 @@ class SettingsViewState extends State<SettingsView> {
 
         child: Column(
           children: [
+            if (!ContentModel.instance.connectionSet) 
+              Text(
+                AppLocalizations.of(context)!.login,
+                style: const TextStyle(fontSize: 18),
+              ),
+
+            if (!ContentModel.instance.connectionSet)
+              const SizedBox(height: 24),
+          
             TextField(
               controller: userController,
               decoration: InputDecoration(
@@ -96,7 +107,7 @@ class SettingsViewState extends State<SettingsView> {
                             });
                           },
 
-                          child: isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
+                          child: isLoading ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary))
                             : Text(AppLocalizations.of(context)!.check, textAlign: TextAlign.center),
                         ),
                       )
@@ -140,7 +151,8 @@ class SettingsViewState extends State<SettingsView> {
                       child: Selector<ContentModel, bool>(
                         selector: (_, contentModel) => contentModel.isLoading,
 
-                        builder: (context, isLoading, child) => isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
+                        builder: (context, isLoading, child) => isLoading 
+                          ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary))
                           : Text(AppLocalizations.of(context)!.sync)
                       ) 
                     )
