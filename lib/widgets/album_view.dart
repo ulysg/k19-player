@@ -6,6 +6,7 @@ import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
 import "package:provider/provider.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class AlbumGrid extends StatelessWidget {
   const AlbumGrid({
@@ -238,6 +239,31 @@ class AlbumDropdown extends StatelessWidget {
     super.key,
   });
 
+  String getLabel(SortOrder order, BuildContext context) {
+    switch (order) {
+      case SortOrder.random:
+        return AppLocalizations.of(context)!.random;
+
+      case SortOrder.nameAsc:
+        return "${AppLocalizations.of(context)!.name} ↑";
+
+      case SortOrder.nameDesc:
+        return "${AppLocalizations.of(context)!.name} ↓";
+
+      case SortOrder.artistAsc:
+        return "${AppLocalizations.of(context)!.artist} ↑";
+
+      case SortOrder.artistDesc:
+        return "${AppLocalizations.of(context)!.artist} ↓";
+
+      case SortOrder.yearAsc:
+        return "${AppLocalizations.of(context)!.year} ↑";
+
+      case SortOrder.yearDesc:
+        return "${AppLocalizations.of(context)!.year} ↓";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Selector<ContentModel, SortOrder>(
@@ -245,7 +271,7 @@ class AlbumDropdown extends StatelessWidget {
 
       builder: (context, albumsOrder, child) {
         return DropdownMenu<SortOrder>(
-          width: 120,
+          width: 132,
           initialSelection: albumsOrder,
 
           inputDecorationTheme: const InputDecorationTheme(
@@ -259,7 +285,7 @@ class AlbumDropdown extends StatelessWidget {
           dropdownMenuEntries: SortOrder.values.map((value) {
             return DropdownMenuEntry(
               value: value,
-              label: value.label,
+              label: getLabel(value, context),
             );
           }).toList(),
         );

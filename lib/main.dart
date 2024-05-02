@@ -1,6 +1,7 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter_localizations/flutter_localizations.dart";
 import "package:just_audio_background/just_audio_background.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
@@ -10,6 +11,7 @@ import "package:k19_player/widgets/settings.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:k19_player/widgets/song_view.dart";
 import "package:provider/provider.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 Future<void> main() async {
   await JustAudioBackground.init(
@@ -44,6 +46,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
       return MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+
         theme: ThemeData(
           colorScheme: lightColorScheme,
         ),
@@ -89,25 +94,25 @@ class MainViewState extends State<MainView> {
 
             selectedIndex: currentPageIndex,
 
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.album),
-                label: "Albums",
+                icon: const Icon(Icons.album),
+                label: AppLocalizations.of(context)!.albums,
               ),
 
               NavigationDestination(
-                icon: Icon(Icons.featured_play_list),
-                label: "Playlists",
+                icon: const Icon(Icons.featured_play_list),
+                label: AppLocalizations.of(context)!.playlists,
               ),
           
               NavigationDestination(
-                icon: Icon(Icons.music_note),
-                label: "Songs",
+                icon: const Icon(Icons.music_note),
+                label: AppLocalizations.of(context)!.songs,
               ),
 
               NavigationDestination(
-                icon: Icon(Icons.settings),
-                label: "Settings",
+                icon: const Icon(Icons.settings),
+                label: AppLocalizations.of(context)!.settings,
               ),
             ],
           ),
@@ -115,21 +120,21 @@ class MainViewState extends State<MainView> {
           body: [
             SmallPlayerView(
               key: UniqueKey(),
-              title: "Albums",
+              title: AppLocalizations.of(context)!.albums,
               action: const AlbumDropdown(),
               child: const AlbumGrid(),
             ),
         
             SmallPlayerView(
               key: UniqueKey(),
-              title: "Playlists",
+              title: AppLocalizations.of(context)!.playlists,
               action:  const PlaylistDropdown(),
               child: const PlaylistList(),
             ),
 
             SmallPlayerView(
               key: UniqueKey(),
-              title: "Songs",
+              title: AppLocalizations.of(context)!.songs,
               action: const SongDropdown(),
               child: const SongView(),
             ),

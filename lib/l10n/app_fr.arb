@@ -1,0 +1,19 @@
+{
+	"albums": "Albums",
+	"playlists": "Listes de lecture",
+	"songs": "Chansons",
+	"settings": "Paramètres",
+	"username": "Nom d'utilisateur",
+	"password": "Mot de passe",
+	"hostname": "URL du serveur",
+	"check": "Tester la connexion",
+	"save": "Sauvegarder",
+	"sync": "Syncronizer les données",
+
+	"random": "Aléatoire",
+	"name": "Nom",
+	"artist": "Artiste",
+	"year": "Année",
+	"songCount": "Chansons",
+	"created": "Créé le"
+}

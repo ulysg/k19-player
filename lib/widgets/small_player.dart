@@ -113,6 +113,11 @@ class SmallPlayerView extends StatelessWidget {
 
                 return Scaffold(
                   appBar: AppBar(
+                    leading: ImageIcon(
+                      const AssetImage("assets/images/icon.png"),
+                      color: Theme.of(context).colorScheme.onBackground
+                    ),
+
                     title: Text(title),
 
                     actions: actions,

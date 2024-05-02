@@ -8,6 +8,7 @@ import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:provider/provider.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class PlaylistList extends StatelessWidget {
   const PlaylistList({
@@ -254,6 +255,31 @@ class PlaylistDropdown extends StatelessWidget {
     super.key,
   });
 
+  String getLabel(PlaylistSortOrder order, BuildContext context) {
+    switch (order) {
+      case PlaylistSortOrder.random:
+        return AppLocalizations.of(context)!.random;
+
+      case PlaylistSortOrder.nameAsc:
+        return "${AppLocalizations.of(context)!.name} ↑";
+
+      case PlaylistSortOrder.nameDesc:
+        return "${AppLocalizations.of(context)!.name} ↓";
+
+      case PlaylistSortOrder.countAsc:
+        return "${AppLocalizations.of(context)!.songCount} ↑";
+
+      case PlaylistSortOrder.countDesc:
+        return "${AppLocalizations.of(context)!.songCount} ↓";
+
+      case PlaylistSortOrder.yearAsc:
+        return "${AppLocalizations.of(context)!.created} ↑";
+
+      case PlaylistSortOrder.yearDesc:
+        return "${AppLocalizations.of(context)!.created} ↓";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Selector<ContentModel, PlaylistSortOrder>(
@@ -261,7 +287,7 @@ class PlaylistDropdown extends StatelessWidget {
 
       builder: (context, playlistsOrder, child) {
         return DropdownMenu<PlaylistSortOrder>(
-          width: 120,
+          width: 132,
           initialSelection: playlistsOrder,
 
           inputDecorationTheme: const InputDecorationTheme(
@@ -275,7 +301,7 @@ class PlaylistDropdown extends StatelessWidget {
           dropdownMenuEntries: PlaylistSortOrder.values.map((value) {
             return DropdownMenuEntry(
               value: value,
-              label: value.label,
+              label: getLabel(value, context),
             );
           }).toList(),
         );

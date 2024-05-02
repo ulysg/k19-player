@@ -6,6 +6,7 @@ import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/connection.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:provider/provider.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -24,7 +25,14 @@ class SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Settings")),
+      appBar: AppBar(
+        leading: ImageIcon(
+          const AssetImage("assets/images/icon.png"),
+          color: Theme.of(context).colorScheme.onBackground
+        ),
+
+        title: const Text("Settings")
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -33,10 +41,10 @@ class SettingsViewState extends State<SettingsView> {
           children: [
             TextField(
               controller: userController,
-              decoration: const InputDecoration(
-                labelText: "Username",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.username,
                 hintText: "username",
-                border: OutlineInputBorder()
+                border: const OutlineInputBorder()
               ),
             ),
 
@@ -45,10 +53,10 @@ class SettingsViewState extends State<SettingsView> {
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.password,
                 hintText: "password",
-                border: OutlineInputBorder()
+                border: const OutlineInputBorder()
               ),
             ),
 
@@ -56,10 +64,10 @@ class SettingsViewState extends State<SettingsView> {
 
             TextField(
               controller: urlController,
-              decoration: const InputDecoration(
-                labelText: "Server URL",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.hostname,
                 hintText: "https://exemple.com",
-                border: OutlineInputBorder()
+                border: const OutlineInputBorder()
               ),
             ),
 
@@ -89,7 +97,7 @@ class SettingsViewState extends State<SettingsView> {
                           },
 
                           child: isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
-                            : const Text("Check connection", textAlign: TextAlign.center),
+                            : Text(AppLocalizations.of(context)!.check, textAlign: TextAlign.center),
                         ),
                       )
                     ),
@@ -107,7 +115,7 @@ class SettingsViewState extends State<SettingsView> {
                           }
                             : null,
 
-                          child: const Text("Save"),
+                          child: Text(AppLocalizations.of(context)!.save),
                         )
                       )
                     )
@@ -133,7 +141,7 @@ class SettingsViewState extends State<SettingsView> {
                         selector: (_, contentModel) => contentModel.isLoading,
 
                         builder: (context, isLoading, child) => isLoading ? CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary)
-                          : const Text("Sync database")
+                          : Text(AppLocalizations.of(context)!.sync)
                       ) 
                     )
                   )

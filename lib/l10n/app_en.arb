@@ -1,0 +1,19 @@
+{
+	"albums": "Albums",
+	"playlists": "Playlists",
+	"songs": "Songs",
+	"settings": "Settings",
+	"username": "Username",
+	"password": "Password",
+	"hostname": "Server URL",
+	"check": "Check connection",
+	"save": "Save",
+	"sync": "Sync data",
+
+	"random": "Random",
+	"name": "Name",
+	"artist": "Artist",
+	"year": "Year",
+	"songCount": "Song count",
+	"created": "Created"
+}

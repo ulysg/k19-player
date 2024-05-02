@@ -6,35 +6,23 @@ import "package:k19_player/domain/entities/playlist.dart";
 import "package:k19_player/domain/entities/song.dart";
 
 enum SortOrder {
-  random(label: "Random"),
-  nameAsc(label: "Name ↑"),
-  nameDesc(label: "Name ↓"),
-  artistAsc(label: "Artist ↑"),
-  artistDesc(label: "Artist ↓"),
-  yearAsc(label: "Year ↑"),
-  yearDesc(label: "Year ↓");
-
-  const SortOrder({
-    required this.label
-  });
-
-  final String label;
+  random,
+  nameAsc,
+  nameDesc,
+  artistAsc,
+  artistDesc,
+  yearAsc,
+  yearDesc;
 }
 
 enum PlaylistSortOrder {
-  random(label: "Random"),
-  nameAsc(label: "Name ↑"),
-  nameDesc(label: "Name ↓"),
-  countAsc(label: "Song count ↑"),
-  countDesc(label: "Song count ↓"),
-  yearAsc(label: "Created ↑"),
-  yearDesc(label: "Created ↓");
-
-  const PlaylistSortOrder({
-    required this.label
-  });
-
-  final String label;
+  random,
+  nameAsc,
+  nameDesc,
+  countAsc,
+  countDesc,
+  yearAsc,
+  yearDesc;
 }
 
 class ContentModel extends ChangeNotifier {
