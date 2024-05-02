@@ -121,7 +121,7 @@ class SettingsViewState extends State<SettingsView> {
 
                         child: FilledButton(
                           onPressed: canConnect ? () async {
-                            await ContentModel.instance.setConnection(urlController.text, userController.text, passwordController.text);
+                            await ContentModel.instance.setConnection(userController.text, passwordController.text, urlController.text);
                             await ContentModel.instance.getContent();
                           }
                             : null,
