@@ -1,0 +1,5 @@
+* First release
+* Added login option
+* Added music playing
+* Added music browsing
+* Added caching
