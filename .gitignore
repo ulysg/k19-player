@@ -44,3 +44,6 @@ app.*.map.json
 
 # API password
 constants.dart
+
+# key
+/android/key.properties

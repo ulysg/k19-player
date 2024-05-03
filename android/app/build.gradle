@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "ch.ulys.k19player"
+    namespace "com.example.k19_player"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -52,11 +52,33 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            def keystorePropertiesFile = rootProject.file("key.properties")
+            def keystoreProperties = new Properties()
+
+            if (!keystorePropertiesFile.exists()) return
+
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+
+        unsigned {
+            keyAlias = ""
+            keyPassword = ""
+            storePassword = ""
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig null
+            signingConfig signingConfigs.release
         }
     }
 
@@ -65,6 +87,12 @@ android {
     productFlavors {
         fdroid {
             dimension "deploy"
+            signingConfig signingConfigs.unsigned
+        }
+
+        production {
+            dimension "deploy"
+            signingConfig signingConfigs.release
         }
     }
 
