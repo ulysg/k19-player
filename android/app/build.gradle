@@ -90,7 +90,7 @@ android {
             signingConfig signingConfigs.unsigned
         }
 
-        production {
+        normal {
             dimension "deploy"
             signingConfig signingConfigs.release
         }

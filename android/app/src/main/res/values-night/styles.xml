@@ -4,7 +4,7 @@
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when
              the Flutter engine draws its first frame -->
-        <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:windowBackground">@color/dark_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
 
     </style>
