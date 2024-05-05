@@ -31,6 +31,7 @@ class ContentModel extends ChangeNotifier {
   List<Song> songs = List.empty();
   List<Playlist> playlists = List.empty();
   List<Media> searchResult = List.empty();
+  List<Song> songResult = List.empty();
 
   SortOrder songsOrder = SortOrder.random;
   SortOrder albumsOrder = SortOrder.random;
@@ -203,13 +204,18 @@ class ContentModel extends ChangeNotifier {
   }
 
   search(String term) {
+    if (term.length < 2) {
+      searchResult = List.empty();
+      return;
+    }
+
     term = term.toLowerCase();
-    List<Media> songResult = songs.where((s) => s.title!.toLowerCase().contains(term) || s.artist!.toLowerCase().contains(term)).map((s) => s as Media).toList();
+    songResult = songs.where((s) => s.title!.toLowerCase().contains(term) || s.artist!.toLowerCase().contains(term)).toList();
+    List<Media> songMediaResult = songResult.map((s) => s as Media).toList();
     List<Media> albumResult = albums.where((a) => a.name!.toLowerCase().contains(term) || a.artist!.toLowerCase().contains(term)).map((a) => a as Media).toList();
     List<Media> playlistResult = playlists.where((p) => p.name!.toLowerCase().contains(term)).map((p) => p as Media).toList();
 
-    searchResult =songResult + albumResult + playlistResult;
-    print(searchResult.length);
+    searchResult = songMediaResult + albumResult + playlistResult;
     notifyListeners();
   }
 }

@@ -27,33 +27,7 @@ class AlbumGrid extends StatelessWidget {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 6, crossAxisSpacing: 12),
 
             itemBuilder: (context, index) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-
-                onTap: () async {
-                  Navigator.push(
-                    context,
-          
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Scaffold(
-                          appBar: AppBar(
-                            title: Text(contentModel.albums[index].name ?? "")
-                          ),
-
-                          body: Padding(
-                            padding: const EdgeInsets.all(24),
-
-                            child: AlbumView(album: contentModel.albums[index])
-                          )
-                        );
-                      }
-                    )
-                  );
-                },
-
-                child: AlbumThumbnail(album: contentModel.albums[index])
-              );
+              return AlbumThumbnail(album: contentModel.albums[index]);
             },
           )
         );
@@ -72,26 +46,129 @@ class AlbumThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CoverArt(
-          size: 96,
-          image: Music.instance.getAlbumCover(album)
-        ),
-        
-        const SizedBox(height: 6),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
 
-        Text(
-          album.name ?? "",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16)
-        ),
+      onTap: () async {
+        Navigator.push(
+          context,
 
-        Text(
-          album.artist ?? "",
-          overflow: TextOverflow.ellipsis,
-        )
-      ],
+          MaterialPageRoute(
+            builder: (context) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text(album.name ?? "")
+                ),
+
+                body: Padding(
+                  padding: const EdgeInsets.all(24),
+
+                  child: AlbumView(album: album)
+                )
+              );
+            }
+          )
+        );
+      },
+
+      child: Column(
+        children: [
+          CoverArt(
+            size: 96,
+            image: Music.instance.getAlbumCover(album)
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            album.name ?? "",
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 16)
+          ),
+
+          Text(
+            album.artist ?? "",
+            overflow: TextOverflow.ellipsis,
+          )
+        ],
+      )
+    );
+  }
+}
+
+class InlineAlbumThumbnail extends StatelessWidget {
+  final Album album;
+
+  const InlineAlbumThumbnail({
+    super.key,
+    required this.album
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+
+      onTap: () async {
+        Navigator.push(
+          context,
+
+          MaterialPageRoute(
+            builder: (context) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text(album.name ?? "")
+                ),
+
+                body: Padding(
+                  padding: const EdgeInsets.all(24),
+
+                  child: AlbumView(album: album)
+                )
+              );
+            }
+          )
+        );
+      },
+
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+
+        children: [
+          CoverArt(
+            size: 48, 
+            image: Music.instance.getAlbumCover(album)
+          ),
+
+          const SizedBox(width: 24),
+
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+          
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                Text(
+                  album.name?? "",
+                  style: const TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis
+                ),
+
+                Text(
+                  album.artist ?? "",
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          Text(album.song.length.toString()),
+        ],
+      )
     );
   }
 }

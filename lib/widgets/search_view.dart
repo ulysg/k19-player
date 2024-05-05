@@ -57,17 +57,17 @@ class SearchView extends StatelessWidget {
                   itemCount: contentModel.searchResult.length,
 
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () async {
-                        await PlayerModel.instance.setPlaylist(contentModel.songs, index: index);
-                        await PlayerModel.player.play();
-                      },
-
-                      child: SearchThumbnail(media: contentModel.searchResult[index])
-                    );
+                    return SearchThumbnail(media: contentModel.searchResult[index], index: index);
                   },
 
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                  separatorBuilder: (BuildContext context, int index) {
+                    if (contentModel.searchResult[index].runtimeType != contentModel.searchResult[index + 1].runtimeType)
+                    {
+                      return const Divider(thickness: 3);
+                    }
+
+                    return const Divider();
+                  }
                 )
               );
             }
@@ -80,20 +80,29 @@ class SearchView extends StatelessWidget {
 
 class SearchThumbnail extends StatelessWidget {
   final Media media;
+  final int index;
 
   const SearchThumbnail({
     super.key,
-    required this.media
+    required this.media,
+    required this.index
   });
 
   @override
   Widget build(BuildContext context) {
     if (media is Song) {
-      return SongThumbnail(song: media as Song);
+      return InkWell(
+        onTap: () async {
+          await PlayerModel.instance.setPlaylist(ContentModel.instance.songResult, index: index);
+          await PlayerModel.player.play();
+        },
+
+        child: SongThumbnail(song: media as Song)
+      );
     }
 
     if (media is Album) {
-      return AlbumThumbnail(album: media as Album);
+      return InlineAlbumThumbnail(album: media as Album);
     }
 
     return PlaylistThumbnail(playlist: media as Playlist);

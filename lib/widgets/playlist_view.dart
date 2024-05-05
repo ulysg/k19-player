@@ -28,33 +28,7 @@ class PlaylistList extends StatelessWidget {
             itemCount: contentModel.playlists.length,
 
             itemBuilder: (context, index) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-
-                onTap: () async {
-                  Navigator.push(
-                    context,
-                
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Scaffold(
-                          appBar: AppBar(
-                            title: Text(contentModel.playlists[index].name ?? "")
-                          ),
-
-                          body: Padding(
-                            padding: const EdgeInsets.all(24),
-
-                            child: PlaylistView(playlist: contentModel.playlists[index])
-                          )
-                        );
-                      }
-                    )
-                  );
-                },
-
-                child: PlaylistThumbnail(playlist: contentModel.playlists[index])
-              );
+                return PlaylistThumbnail(playlist: contentModel.playlists[index]);
             },
 
             separatorBuilder: (BuildContext context, int index) => const Divider(),
@@ -75,35 +49,61 @@ class PlaylistThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
 
-      children: [
-        CoverArt(
-          size: 48,
-          image: Music.instance.getPlaylistCover(playlist)
-        ),
+      onTap: () async {
+        Navigator.push(
+          context,
+      
+          MaterialPageRoute(
+            builder: (context) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text(playlist.name ?? "")
+                ),
 
-        const SizedBox(width: 24),
+                body: Padding(
+                  padding: const EdgeInsets.all(24),
 
-        Flexible(
-          flex: 1,
-          fit: FlexFit.tight,
-
-          child: Text(
-            playlist.name ?? "",
-            style: const TextStyle(fontSize: 16),
-            overflow: TextOverflow.ellipsis,
+                  child: PlaylistView(playlist: playlist)
+                )
+              );
+            }
           )
-        ),
+        );
+      },
 
-        const SizedBox(width: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-        Text(
-          playlist.songCount.toString(), 
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+        children: [
+          CoverArt(
+            size: 48,
+            image: Music.instance.getPlaylistCover(playlist)
+          ),
+
+          const SizedBox(width: 24),
+
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+
+            child: Text(
+              playlist.name ?? "",
+              style: const TextStyle(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
+            )
+          ),
+
+          const SizedBox(width: 12),
+
+          Text(
+            playlist.songCount.toString(), 
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      )
     );
   }
 }
