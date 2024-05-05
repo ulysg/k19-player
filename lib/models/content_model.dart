@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:k19_player/data/music.dart";
 import "package:k19_player/domain/entities/album.dart";
 import "package:k19_player/domain/entities/connection.dart";
+import "package:k19_player/domain/entities/media.dart";
 import "package:k19_player/domain/entities/playlist.dart";
 import "package:k19_player/domain/entities/song.dart";
 
@@ -29,6 +30,7 @@ class ContentModel extends ChangeNotifier {
   List<Album> albums = List.empty();
   List<Song> songs = List.empty();
   List<Playlist> playlists = List.empty();
+  List<Media> searchResult = List.empty();
 
   SortOrder songsOrder = SortOrder.random;
   SortOrder albumsOrder = SortOrder.random;
@@ -198,5 +200,16 @@ class ContentModel extends ChangeNotifier {
     }
 
     playlists.sort(compare); 
+  }
+
+  search(String term) {
+    term = term.toLowerCase();
+    List<Media> songResult = songs.where((s) => s.title!.toLowerCase().contains(term) || s.artist!.toLowerCase().contains(term)).map((s) => s as Media).toList();
+    List<Media> albumResult = albums.where((a) => a.name!.toLowerCase().contains(term) || a.artist!.toLowerCase().contains(term)).map((a) => a as Media).toList();
+    List<Media> playlistResult = playlists.where((p) => p.name!.toLowerCase().contains(term)).map((p) => p as Media).toList();
+
+    searchResult =songResult + albumResult + playlistResult;
+    print(searchResult.length);
+    notifyListeners();
   }
 }

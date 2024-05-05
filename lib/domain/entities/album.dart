@@ -1,6 +1,7 @@
-import 'package:k19_player/domain/entities/song.dart';
+import "package:k19_player/domain/entities/media.dart";
+import "package:k19_player/domain/entities/song.dart";
 
-class Album {
+class Album extends Media {
   final String id;
   final String? title;
   final String? parent;

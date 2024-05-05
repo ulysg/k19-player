@@ -1,4 +1,6 @@
-class Song {
+import "package:k19_player/domain/entities/media.dart";
+
+class Song extends Media {
   final String id;
   final String? parent;
   final bool? isDir;

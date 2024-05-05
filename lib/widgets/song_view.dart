@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:k19_player/data/music.dart";
+import "package:k19_player/domain/entities/media.dart";
 import "package:k19_player/domain/entities/song.dart";
 import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
@@ -19,7 +20,7 @@ class SongView extends StatelessWidget {
         return Scrollbar(
           thickness: 6,
           radius: const Radius.circular(6),
-          
+      
           child: ListView.separated(
             padding: const EdgeInsets.all(24),
             itemCount: contentModel.songs.length,

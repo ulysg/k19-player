@@ -7,6 +7,7 @@ import "package:k19_player/models/content_model.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/album_view.dart";
 import "package:k19_player/widgets/playlist_view.dart";
+import "package:k19_player/widgets/search_view.dart";
 import "package:k19_player/widgets/settings.dart";
 import "package:k19_player/widgets/small_player.dart";
 import "package:k19_player/widgets/song_view.dart";
@@ -112,6 +113,11 @@ class MainViewState extends State<MainView> {
               ),
 
               NavigationDestination(
+                icon: const Icon(Icons.search),
+                label: AppLocalizations.of(context)!.search,
+              ),
+
+              NavigationDestination(
                 icon: const Icon(Icons.settings),
                 label: AppLocalizations.of(context)!.settings,
               ),
@@ -138,6 +144,12 @@ class MainViewState extends State<MainView> {
               title: AppLocalizations.of(context)!.songs,
               action: const SongDropdown(),
               child: const SongView(),
+            ),
+
+            SmallPlayerView(
+              key: UniqueKey(),
+              title: AppLocalizations.of(context)!.search,
+              child: const SearchView(),
             ),
 
             const SettingsView()
