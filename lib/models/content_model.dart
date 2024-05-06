@@ -203,9 +203,10 @@ class ContentModel extends ChangeNotifier {
     playlists.sort(compare); 
   }
 
-  search(String term) {
+  search(String term) async {
     if (term.length < 2) {
       searchResult = List.empty();
+      notifyListeners();
       return;
     }
 

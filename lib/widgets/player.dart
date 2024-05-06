@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:just_audio/just_audio.dart";
 import "package:k19_player/models/player_model.dart";
 import "package:k19_player/widgets/playing_image.dart";
@@ -24,121 +25,149 @@ class Player extends StatelessWidget {
             size: 288,
           ),
 
-          const MusicSlider(),
+        
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+
+            onPanEnd: (details) {
+              Offset offset = details.velocity.pixelsPerSecond;
+
+              if (offset.dx.abs() < offset.dy.abs()) {
+                return;
+              }
+
+              if (offset.dx > 5) {
+                PlayerModel.player.seekToPrevious();
+                return;
+              }
+
+              if (offset.dx < -5) {
+                PlayerModel.player.seekToNext();
+              }
+            },
+
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+              children: [
+                const MusicSlider(),
+
+                const SizedBox(height: 12),
+
+                Selector<PlayerModel, String?>(
+                  selector: (_, playerModel) => playerModel.mediaItem?.title,
+
+                  builder: (context, title, child) {
+                    return Text(
+                      title ?? "",
+                      style: const TextStyle(fontSize: 18),
+                      overflow: TextOverflow.ellipsis
+                    );
+                  }
+                ),
+
+                const SizedBox(height: 6),
           
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            
-            children: [
-              Selector<PlayerModel, String?>(
-                selector: (_, playerModel) => playerModel.mediaItem?.title,
+                Selector<PlayerModel, String?>(
+                  selector: (_, playerModel) => playerModel.mediaItem?.artist,
 
-                builder: (context, title, child) {
-                  return Text(
-                    title ?? "",
-                    style: const TextStyle(fontSize: 18),
-                    overflow: TextOverflow.ellipsis
-                  );
-                }
-              ),
-
-              const SizedBox(height: 6),
-                
-              Selector<PlayerModel, String?>(
-                selector: (_, playerModel) => playerModel.mediaItem?.artist,
-
-                builder: (context, artist, child) {
-                  return Text(
-                    artist ?? "",
-                    overflow: TextOverflow.ellipsis
-                  );
-                },
-              ),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-            children: [
-              Selector<PlayerModel, bool>(
-                selector: (_, __) => PlayerModel.player.hasPrevious,
-
-                builder: (context, hasPrevious, child) {
-                  return FilledButton.tonal(
-                    onPressed: hasPrevious ? () => PlayerModel.player.seekToPrevious() : null,
-
-                    child: const Icon(Icons.skip_previous),
-                  );
-              }),
-
-              const PlayingButton(),
-
-              Selector<PlayerModel, bool>(
-                selector: (_, __) => PlayerModel.player.hasNext,
-
-                builder: (context, hasNext, child) {
-                  return FilledButton.tonal(
-                    onPressed: hasNext ? () => PlayerModel.player.seekToNext() : null,
-
-                    child: const Icon(Icons.skip_next),
-                  );
-              }),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-
-            children: [
-              Selector<PlayerModel, LoopMode>(
-                selector: (_, __) => PlayerModel.player.loopMode,
-
-                builder: (context, loopMode, child) {
-                  if (loopMode == LoopMode.all) {
-                    return IconButton.filled(
-                      onPressed: () {
-                        PlayerModel.player.setLoopMode(LoopMode.off);
-                      },
-
-                      icon: const Icon(Icons.loop),
+                  builder: (context, artist, child) {
+                    return Text(
+                      artist ?? "",
+                      overflow: TextOverflow.ellipsis
                     );
-                  }
+                  },
+                ),
 
-                  return IconButton(
-                    onPressed: () {
-                      PlayerModel.player.setLoopMode(LoopMode.all);
-                    },
+                const SizedBox(height: 24),
 
-                    icon: const Icon(Icons.loop),
-                  );
-                }
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-              Selector<PlayerModel, bool>(
-                selector: (_, __) => PlayerModel.player.shuffleModeEnabled,
+                  children: [
+                    Selector<PlayerModel, bool>(
+                      selector: (_, __) => PlayerModel.player.hasPrevious,
 
-                builder: (context, shuffleModeEnabled, child) {
-                  if (shuffleModeEnabled) {
-                    return IconButton.filled(
-                      onPressed: () {
-                        PlayerModel.player.setShuffleModeEnabled(false);
-                      },
+                      builder: (context, hasPrevious, child) {
+                        return FilledButton.tonal(
+                          onPressed: hasPrevious ? () => PlayerModel.player.seekToPrevious() : null,
 
-                      icon: const Icon(Icons.shuffle),
-                    );
-                  }
+                          child: const Icon(Icons.skip_previous),
+                        );
+                    }),
 
-                  return IconButton(
-                    onPressed: () {
-                      PlayerModel.player.setShuffleModeEnabled(true);
-                    },
+                    const PlayingButton(),
 
-                    icon: const Icon(Icons.shuffle),
-                  );
-                }
-              )
-            ]
+                    Selector<PlayerModel, bool>(
+                      selector: (_, __) => PlayerModel.player.hasNext,
+
+                      builder: (context, hasNext, child) {
+                        return FilledButton.tonal(
+                          onPressed: hasNext ? () => PlayerModel.player.seekToNext() : null,
+
+                          child: const Icon(Icons.skip_next),
+                        );
+                    }),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+
+                  children: [
+                    Selector<PlayerModel, LoopMode>(
+                      selector: (_, __) => PlayerModel.player.loopMode,
+
+                      builder: (context, loopMode, child) {
+                        if (loopMode == LoopMode.all) {
+                          return IconButton.filled(
+                            onPressed: () {
+                              PlayerModel.player.setLoopMode(LoopMode.off);
+                            },
+
+                            icon: const Icon(Icons.loop),
+                          );
+                        }
+
+                        return IconButton(
+                          onPressed: () {
+                            PlayerModel.player.setLoopMode(LoopMode.all);
+                          },
+
+                          icon: const Icon(Icons.loop),
+                        );
+                      }
+                    ),
+
+                    Selector<PlayerModel, bool>(
+                      selector: (_, __) => PlayerModel.player.shuffleModeEnabled,
+
+                      builder: (context, shuffleModeEnabled, child) {
+                        if (shuffleModeEnabled) {
+                          return IconButton.filled(
+                            onPressed: () {
+                              PlayerModel.player.setShuffleModeEnabled(false);
+                            },
+
+                            icon: const Icon(Icons.shuffle),
+                          );
+                        }
+
+                        return IconButton(
+                          onPressed: () {
+                            PlayerModel.player.setShuffleModeEnabled(true);
+                          },
+
+                          icon: const Icon(Icons.shuffle),
+                        );
+                      }
+                    )
+                  ]
+                )
+              ]
+            )
           ),
         ],
       ),
