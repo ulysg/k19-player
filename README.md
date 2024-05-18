@@ -10,3 +10,9 @@ The features are:
 * Background audio
 * Pretty simple
 * Nice UI
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/ch.ulys.k19player/)
+
+Or download the latest APK from the [Releases Section](https://github.com/ulysg/k19-player/releases/latest).
